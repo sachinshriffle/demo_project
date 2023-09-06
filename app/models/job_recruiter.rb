@@ -1,0 +1,2 @@
+class JobRecruiter < User
+end

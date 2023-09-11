@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
  before_action :authorize_request, except: [:login, :index]
+ before_action :authorize_recruiter, except: [:show, :index, :login]
 
   def authorize_request
     header = request.headers['Authorization']
@@ -11,6 +12,12 @@ class ApplicationController < ActionController::API
       render json: { errors: e.message }, status: :unauthorized
     rescue JWT::DecodeError => e
       render json: { errors: e.message }, status: :unauthorized
+    end
+  end
+
+  def authorize_recruiter
+    if @current_user.type != "JobRecruiter"
+      render json: { message: "You are not authorized for this action" }, status: :forbidden
     end
   end
 end

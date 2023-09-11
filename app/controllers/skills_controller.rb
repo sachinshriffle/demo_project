@@ -1,44 +1,43 @@
 class SkillsController < ApplicationController
+	skip_before_action :authorize_recruiter 
+
+	def index 
+		job = Job.all
+		render json: job 
+	end
 
 	def create
-		if @current_user.type == "JobSeeker"
-		 skills = Skill.new(skills_params)
-		 return render json: {message: "skills create successfuly!"}, status: :ok if skills.save
-		 render json: {errors: skills.errors.messages}
-		else
-			render json: {message: "you are not a jobseeker"}
-		end
+		return render json: {message: "you are not a jobseeker"} unless @current_user.type == "JobSeeker"
+		skill = Skill.create(skills_params)
+		skill =  @current_user.skills << skill
+		return render json: {data: skill , message: "skills create successfuly!"} if skill
+		render json: {errors: skills.errors.messages}
 	end 
 
 	def destroy
-		return unless skill = common_method
+		return unless @current_user.type == "JobSeeker"
+		skill = @current_user.skills.find_by_id(params[:id])
+		return render json: { message: "Skill not found" }, status: :not_found unless skill
 		skills = skill.destroy
 		render json: {message: "skills delete successfuly!"}
 	end
 
 	def update
-		return unless skill = common_method
+		return unless @current_user.type == "JobSeeker"
+		skill = @current_user.skills.find_by_id(params[:id])
+		return render json: { message: "Skill not found" }, status: :not_found unless skill
     skills = skill.update(skills_params)
-    render json: {data: skills , message: "skills update successfuly!"}
+    render json: {message: "skills update successfuly!"}
   end
 
   def show 
-  	skills = Skill.all
-  	render json: skills
+    skills = Skill.find_by_id(params[:id])
+    return render json: {message: "Skill not found"} unless skills
+    render json: skills
   end
 
 	private
 	def skills_params
 		params.permit(:skills)
-	end
-
-	def common_method
-		skils = Skill.find_by_id(params[:id])
-		if skils
-			return skills
-		else
-		 render json: {message: "skill Not find"}
-		 return 
-		end
 	end
 end

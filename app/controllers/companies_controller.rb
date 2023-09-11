@@ -1,47 +1,40 @@
 class CompaniesController < ApplicationController
 
-  def index
-  	company = Company.all
-  	render json: company
+	def index
+    companies = Company.all
+  	render json: companies
   end
 
 	def create
-		if @current_user.type == "JobRecruiter"
-		 company = @current_user.build_company(company_params)
-		 if company.save 
-		   render json: {message: "company create successfuly!"}
-		 else
-		   render json: {errors: companys.errors.full_messages}
-		 end
+		company = @current_user.build_company(company_params)
+		if company.save 
+		  render json: {data: company, message: "company created successfuly!"}, status: :ok
 		else
-			render json: {message: "you are a job seeker"}
+		  render json: {errors: companys.errors.full_messages}
 		end
 	end 
 
 	def destroy
-		if @current_user.type == "JobRecruiter"
-		  company = @current_user.company.destroy
-		  render json: {message: "company delete successfuly!"}
-		else
-			render json: {message: "you don't have a authorized to delete"}
-		end
+		company = Company.find_by_id(params[:id])
+		company.destroy
+		render json: {message: "company deleted successfully!"}
 	end
 
 	def update
-    if @current_user.type == "JobRecruiter"
-		  company = @current_user.company.update(company_params)
-		  render json: {message: "company update successfuly!"}
-		else
-			render json: {message: "you don't have a authorized to update any details"}
-		end
+		company = Company.find_by_id(params[:id])
+		company = @current_user.company.update(company_params)
+		return render json: {message: "company updated successfuly!"} if company
+		render json: {errors: company.errors.full_messages}
   end
 
   def show 
-  	company = @current_user.company
-  	render json: company
+    company = Company.find_by_id(params[:id])
+    return render json: {message: "company not found"} unless company
+    render json: company
   end
 
 	private
+
 	def company_params
 		params.permit(:company_name, :address, :contact, :user_id)
 	end

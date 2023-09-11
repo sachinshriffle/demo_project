@@ -1,30 +1,26 @@
 class UsersController < ApplicationController
-	before_action :authorize_request , except: :create 
+	skip_before_action :authorize_request , only: :create 
+	skip_before_action :authorize_recruiter
 	
 	def create
 		user = User.new(user_params)
-		return render json: {message: "user create successfuly!"}, status: :ok if user.save
+		return render json: {message: "user created successfuly!"}, status: :ok if user.save
 		render json: {errors: user.errors.messages}
 	end 
 
 	def destroy
 		@current_user.destroy
-		return render json: {message: "user delete successfuly!"}
+		return render json: {message: "user deleted successfuly!"}, status: :ok
 	end
 
 	def update
     user = @current_user.update(update_params)
-    render json: {data: user , message: "user update successfuly!"}
+    render json: {data: user , message: "user updated successfuly!"}, status: :ok
   end
 
   def show 
-  	if @current_user.type == "JobSeeker"
-  		user = JobSeeker.all
-  		render json: user
-  	else
-  		user = JobRecruiter.all
-  		render json: user
-  	end
+  	users = @current_user.type == "JobSeeker" ? JobSeeker.all : JobRecruiter.all
+    render json: users
   end
 
 	private

@@ -3,4 +3,5 @@ class Job < ApplicationRecord
 	has_many :job_applicatons
 
 	validates :job_title , uniqueness: {scope: :company_id , message: "job title for this company is already created"}
+	validates :required_skills, presence: true
 end

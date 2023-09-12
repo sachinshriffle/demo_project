@@ -1,5 +1,4 @@
 class JobsController < ApplicationController
-  skip_before_action :authorize_recruiter, only: :suggested_jobs
 
   def index
   	  jobs = Job.all
@@ -9,39 +8,31 @@ class JobsController < ApplicationController
 	def create
 		company = @current_user.company
 		jobs = company.jobs.build(job_params)
-		if jobs.save 
-		  render json: {message: "job create successfuly!"}
-	  else
-		  render json: {errors: jobs.errors.full_messages}  
-		end
+		return render json: {errors: jobs.errors.full_messages} unless jobs.save 
+		render json: {message: "job created successfuly!"} , status: 200
 	end 
+ 
 
 	def destroy
-		jobs = set_job.destroy
-		render json: {message: "job delete successfuly!"}
+		job = @job.destroy
+		return render json: {errors: job.errors.message} unless job
+		render json: {message: "job deleted successfuly!"}
 	end
 
 	def update
-		jobs = set_job.update(jobs_params)
+		job = @job.update(jobs_params)
+		return render json: {errors: job.errors.message} unless job
 		render json: {message: "job update successfuly!"}
   end
 
   def show 
-  	job = Job.find_by_id(params[:id])
-  	return render json: {message: "Job not available"} unless job
-  	rendr json: job
-  end
-
-  def suggested_jobs
-    return unless @current_user.type == "JobSeeker"
-    suggested_jobs = Job.where('required_skills IN (?)', @current_user.skills.pluck(:skills))
-    render json: suggested_jobs
+  	rendr json: @job
   end
 
   def top_jobs
-    top_jobs = Job.joins(:job_applications).group(:id).order('COUNT(job_applications.id) DESC').limit(10)
-    top_jobs = Job.top_jobs_for_recruiter(@current_user)
-    render json: top_jobs
+    top_jobs = JobApplication.joins(:job).group(:id).order('COUNT(job_applications.id) DESC').limit(10)
+    return render	json: {message: "jobs are not available"} unless top_jobs
+    render json: top_jobs, status: :ok
   end
 
 	private
@@ -50,9 +41,7 @@ class JobsController < ApplicationController
 	end
 
 	def set_job
-    job = Job.find_by_id(params[:id])
-    unless job
-      render json: { message: "Job not found" }, status: :not_found
-    end
+    @job = Job.find_by_id(params[:id])
+    return render json: { message: "Job not found" }, status: :not_found unless @job
 	end
 end

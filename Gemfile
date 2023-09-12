@@ -75,3 +75,4 @@ gem "jwt"
 gem "bcrypt", "~> 3.1.7"
 gem "byebug"
 gem "active_model_serializers"
+gem 'will_paginate', '~> 4.0'

@@ -1,5 +1,6 @@
 class JobApplicationsController < ApplicationController
-  skip_before_action :authorize_recruiter , except: :updated
+  skip_before_action :authorize_recruiter , except: [:update, :destroy]
+  before_action :set_application , only: [:update , :destroy, :show]
 
   def index
   	application = JobApplication.all
@@ -14,23 +15,33 @@ class JobApplicationsController < ApplicationController
     render json: { errors: job_application.errors.full_messages }
   end
 
-  def update_status
-  	application = job_application = JobApplication.find(params[:id])
-  	company = application.job.company
-  	return unless @current_user == company.user
+  def update
+  	return render json: {message: "you have not access to change another application"} unless @current_user == application.job.company.user
     new_status = params[:status] 
-    jobs = application.update(status: new_status)
-    if jobs
-      render json: { message: "Job application updated successfully!"}
-    else
-      render json: { errors: ["Invalid status"] }
-    end
+    status_update = @application.update(status: new_status)
+    return render json: { message: "Invalid Status" } unless status_update
+    render json: { data: application, message: "Job application updated successfully!"}
   end
 
-  # private
-  # def set_job_application
-    
-  #   render json: { message: "Job application not found" }, status: :not_found unless job_application
-  #   return job_application
-  # end
+  def destroy
+  	begin
+     return	render json: {message: "you have not access to change another application"} unless @current_user == application.job.company.user
+     @application.destroy
+     render json: {message: "Job application deleted successfully!"}
+    rescue => e
+			render json: {errors: e.message}
+		end 
+  end
+
+  def show 
+  	render json: @application
+  end
+
+  private 
+
+  def set_application
+  	@application = JobApplication.find_by_id(params[:id])
+  	return render json: {message: "application not found"} unless @application
+  end
+
 end

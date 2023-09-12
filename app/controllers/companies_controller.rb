@@ -1,4 +1,5 @@
 class CompaniesController < ApplicationController
+	before_action :set_company , only: [:update , :destroy, :show]
 
 	def index
     companies = Company.all
@@ -6,36 +7,45 @@ class CompaniesController < ApplicationController
   end
 
 	def create
-		company = @current_user.build_company(company_params)
-		if company.save 
-		  render json: {data: company, message: "company created successfuly!"}, status: :ok
-		else
-		  render json: {errors: companys.errors.full_messages}
+		begin
+		 company = @current_user.build_company(company_params)
+		 return render json: {errors: companys.errors.full_messages} unless company.save 
+		 render json: {data: company, message: "company created successfuly!"}, status: :ok
+		rescue => e
+			render json: {errors: e.message}
 		end
 	end 
 
 	def destroy
-		company = Company.find_by_id(params[:id])
-		company.destroy
-		render json: {message: "company deleted successfully!"}
+		begin
+		  @company.destroy
+		  render json: { message: "company deleted successfully!"}
+	 rescue => e
+			render json: {errors: e.message}
+		end
 	end
 
 	def update
-		company = Company.find_by_id(params[:id])
-		company = @current_user.company.update(company_params)
-		return render json: {message: "company updated successfuly!"} if company
-		render json: {errors: company.errors.full_messages}
+		begin
+		 @company.update!(company_params)
+		 render json: {data: @company , message: "company updated successfuly!"}
+		rescue => e
+			render json: {errors: e.message}
+		end 
   end
 
   def show 
-    company = Company.find_by_id(params[:id])
-    return render json: {message: "company not found"} unless company
-    render json: company
+    render json: @company
   end
 
 	private
 
 	def company_params
 		params.permit(:company_name, :address, :contact, :user_id)
+	end
+
+	def set_company 
+	  @company = Company.find_by_id(params[:id])
+	  return render json: {message: "company not available"} unless @company
 	end
 end

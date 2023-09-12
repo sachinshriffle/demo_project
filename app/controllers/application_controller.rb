@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::API
- before_action :authorize_request, except: [:login, :index]
+ before_action :authorize_request, except: [:login, :index, :show]
  before_action :authorize_recruiter, except: [:show, :index, :login]
 
   def authorize_request

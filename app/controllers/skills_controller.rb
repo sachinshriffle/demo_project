@@ -1,43 +1,47 @@
 class SkillsController < ApplicationController
 	skip_before_action :authorize_recruiter 
+	before_action :set_skill , only: [:destroy, :update, :show]
 
 	def index 
-		job = Job.all
-		render json: job 
+		skill = Skill.all
+		render json: skill
 	end
 
 	def create
 		return render json: {message: "you are not a jobseeker"} unless @current_user.type == "JobSeeker"
-		skill = Skill.create(skills_params)
+		skill = Skill.create(skill_params)
 		skill =  @current_user.skills << skill
-		return render json: {data: skill , message: "skills create successfuly!"} if skill
-		render json: {errors: skills.errors.messages}
+		return render json: {data: skill , message: "skill created successfuly!"} if skill
+		render json: {errors: skill.errors.messages}
 	end 
 
 	def destroy
-		return unless @current_user.type == "JobSeeker"
-		skill = @current_user.skills.find_by_id(params[:id])
-		return render json: { message: "Skill not found" }, status: :not_found unless skill
-		skills = skill.destroy
-		render json: {message: "skills delete successfuly!"}
+		return unless @current_user.type == "JobSeeker" 
+		skill = @skill.destroy
+		return render json: {errors: skills.errors.messages} unless skill
+		render json: {message: "skill deleted successfully!"}
 	end
 
 	def update
 		return unless @current_user.type == "JobSeeker"
-		skill = @current_user.skills.find_by_id(params[:id])
-		return render json: { message: "Skill not found" }, status: :not_found unless skill
-    skills = skill.update(skills_params)
-    render json: {message: "skills update successfuly!"}
+    skill = @skill.update(skill_params)
+		return render json: {errors: skills.errors.messages} unless skill
+		render json: {message: "skill updated successfully!"}
   end
 
   def show 
-    skills = Skill.find_by_id(params[:id])
-    return render json: {message: "Skill not found"} unless skills
-    render json: skills
+    render json: @skill
   end
 
 	private
-	def skills_params
-		params.permit(:skills)
+
+	def skill_params
+		params.permit(:skill_name)
 	end
+
+
+	def set_skill
+		@skill = Skill.find_by_id(params[:id])
+		return render json: { message: "Skill not found" }, status: :not_found unless @skill
+	end	
 end

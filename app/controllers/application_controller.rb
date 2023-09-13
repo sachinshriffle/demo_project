@@ -17,7 +17,7 @@ class ApplicationController < ActionController::API
 
   def authorize_recruiter
     if @current_user.type != "JobRecruiter"
-      render json: { message: "You are not authorized for this action" }, status: :forbidden
+      render json: { message: "You are not authorized for this action" }
     end
   end
 end

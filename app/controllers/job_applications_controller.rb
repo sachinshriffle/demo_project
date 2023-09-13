@@ -16,18 +16,16 @@ class JobApplicationsController < ApplicationController
   end
 
   def update
-  	return render json: {message: "you have not access to change another application"} unless @current_user == application.job.company.user
-    new_status = params[:status] 
-    status_update = @application.update(status: new_status)
-    return render json: { message: "Invalid Status" } unless status_update
-    render json: { data: application, message: "Job application updated successfully!"}
+  	return render json: {message: "you have not access to change another application"} unless @current_user == @application.job.company.user
+    return render json: {errors: @application.errors.full_messages} unless @application.update(status: params[:status])
+    render json: {data: @application, message: "Job application updated successfully!"}
   end
 
   def destroy
   	begin
-     return	render json: {message: "you have not access to change another application"} unless @current_user == application.job.company.user
-     @application.destroy
-     render json: {message: "Job application deleted successfully!"}
+      return	render json: {message: "you have not access to change another application"} unless @current_user == application.job.company.user
+      @application.destroy
+      render json: {message: "Job application deleted successfully!"}
     rescue => e
 			render json: {errors: e.message}
 		end 

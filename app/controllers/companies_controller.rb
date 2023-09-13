@@ -2,7 +2,7 @@ class CompaniesController < ApplicationController
 	before_action :set_company , only: [:update , :destroy, :show]
 
 	def index
-    companies = Company.all
+    companies = Company.paginate(:page => params[:page], :per_page => 5)
   	render json: companies
   end
 
@@ -18,7 +18,7 @@ class CompaniesController < ApplicationController
 
 	def destroy
 		begin
-		  @company.destroy
+			return render json: {message: "this is not your company"} if @current_user.id != @company.user_id
 		  render json: { message: "company deleted successfully!"}
 	 rescue => e
 			render json: {errors: e.message}

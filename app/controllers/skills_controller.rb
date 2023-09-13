@@ -1,9 +1,9 @@
 class SkillsController < ApplicationController
 	skip_before_action :authorize_recruiter 
-	before_action :set_skill , only: [:destroy, :update, :show]
+	before_action :set_skill , only: [:destroy, :update]
 
 	def index 
-		skill = Skill.all
+		skill = Skill.paginate(:page => params[:page], :per_page => 10)
 		render json: skill
 	end
 
@@ -16,21 +16,25 @@ class SkillsController < ApplicationController
 	end 
 
 	def destroy
-		return unless @current_user.type == "JobSeeker" 
-		skill = @skill.destroy
-		return render json: {errors: skills.errors.messages} unless skill
+		return render json: {message: "skill "} unless @skill.destroy
 		render json: {message: "skill deleted successfully!"}
 	end
 
 	def update
-		return unless @current_user.type == "JobSeeker"
-    skill = @skill.update(skill_params)
-		return render json: {errors: skills.errors.messages} unless skill
+		return render json: {errors: @skill.errors.full_messages} unless @skill.update(skill_params)
 		render json: {message: "skill updated successfully!"}
   end
 
   def show 
-    render json: @skill
+  	skill = Skill.find_by_id(params[:id])
+  	return render json: { message: "Skill not found" }, status: :not_found unless skill
+    render json: skill
+  end 
+
+  def user_skills
+  	skills = @current_user.skills
+  	return render	json: {message: "you don't have any skill"} unless skills
+    render json: skills
   end
 
 	private
@@ -41,7 +45,7 @@ class SkillsController < ApplicationController
 
 
 	def set_skill
-		@skill = Skill.find_by_id(params[:id])
+		@skill = @current_user.skills.find_by_id(params[:id])
 		return render json: { message: "Skill not found" }, status: :not_found unless @skill
 	end	
 end

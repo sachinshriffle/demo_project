@@ -1,38 +1,42 @@
 class JobsController < ApplicationController
+	before_action :set_job , only: [:destroy , :update, :show]
 
   def index
-  	  jobs = Job.all
-  	  render json: jobs
+  	jobs = Job.paginate(:page => params[:page], :per_page => 5)
+  	render json: jobs
   end
 
 	def create
 		company = @current_user.company
-		jobs = company.jobs.build(job_params)
-		return render json: {errors: jobs.errors.full_messages} unless jobs.save 
+		job = company.jobs.build(job_params)
+		return render json: {errors: job.errors.full_messages} unless job.save 
 		render json: {message: "job created successfuly!"} , status: 200
 	end 
- 
 
 	def destroy
-		job = @job.destroy
-		return render json: {errors: job.errors.message} unless job
+		return render json: {errors: @job.errors.message} unless @job.destroy
 		render json: {message: "job deleted successfuly!"}
 	end
 
 	def update
-		job = @job.update(jobs_params)
-		return render json: {errors: job.errors.message} unless job
+		return render json: {errors: @job.errors.message} unless @job.update(jobs_params)
 		render json: {message: "job update successfuly!"}
   end
 
   def show 
-  	rendr json: @job
+  	render json: @job
   end
 
   def top_jobs
-    top_jobs = JobApplication.joins(:job).group(:id).order('COUNT(job_applications.id) DESC').limit(10)
-    return render	json: {message: "jobs are not available"} unless top_jobs
+    top_jobs = Job.joins(:job_applications).group(:id).order('COUNT(job_applications.id) DESC').limit(10)
+    return render	json: {message: "No Applicants"} if top_jobs.blank?
     render json: top_jobs, status: :ok
+  end
+
+  def current_company_jobs
+  	jobs = @current_user.company.jobs
+  	return render json: {message: "this company has no jobs"}, status: :not_found if jobs.blank?
+  	render	json: jobs
   end
 
 	private

@@ -1,5 +1,5 @@
 class Skill < ApplicationRecord
 	has_and_belongs_to_many :users 
 
-	validates :skill_name , presence: true, uniqueness: true 
+	validates :skill_name , presence: true
 end

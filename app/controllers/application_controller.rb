@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
- before_action :authorize_request, except: [:login, :index, :show]
- before_action :authorize_recruiter, except: [:show, :index, :login]
+  before_action :authorize_request, except: [:login ,:index ,:show]
+  before_action :authorize_recruiter, except: [:show ,:index ,:login]
 
   def authorize_request
     header = request.headers['Authorization']
@@ -16,8 +16,8 @@ class ApplicationController < ActionController::API
   end
 
   def authorize_recruiter
-    if @current_user.type != "JobRecruiter"
-      render json: { message: "You are not authorized for this action" }
-    end
+    return unless @current_user.type != 'JobRecruiter'
+
+    render json: { message: 'You are not authorized for this action' }
   end
 end

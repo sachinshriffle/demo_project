@@ -11,8 +11,9 @@ class JobApplicationsController < ApplicationController
     return render json: { message: 'you are not applicable for apply a job' } unless @current_user.type == 'JobSeeker'
 
     job = Job.find_by_id(params[:job_id])
-    job_application = JobApplication.new(user: @current_user, job:, status: :applied)
-    return render json: { data: job_application, message: 'You have applied for the job successfully!' },status: :created unless job_application.save
+    resume = params[:resume]
+    job_application = JobApplication.new(user: @current_user, job: job, resume: resume, status: :applied)
+    return render json: { data: job_application, message: 'You have applied for the job successfully!' }, status: :created unless job_application.save
 
     render json: { errors: job_application.errors.full_messages }
   end

@@ -80,6 +80,6 @@ class UsersController < ApplicationController
   end
 
   def update_params
-    params.require(:user).permit(:name, :mobile_number, :email)
+    params.permit(:name, :mobile_number, :email)
   end
 end

@@ -19,14 +19,15 @@ class CompaniesController < ApplicationController
 
   def destroy
     return render json: { message: 'this is not your company' } if @current_user.id != @company.user_id
-    @company.destroy!
+    @company.destroy
     render json: { message: 'company deleted successfully!' }
   rescue Exception => e
     render json: { errors: e.message }
   end
 
   def update
-    @company.update!(company_params)
+  	return render json: { message: 'this is not your company' } if @current_user.id != @company.user_id
+    @company.update(company_params)
     render json: { data: @company, message: 'company updated successfuly!' }
   rescue Exception => e
     render json: { errors: e.message }

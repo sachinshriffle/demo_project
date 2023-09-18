@@ -23,4 +23,7 @@ Rails.application.routes.draw do
   get '/search_jobs_by_company_name', to: 'jobs#search_jobs_by_company_name'
   get '/application_by_status', to: 'job_applications#application_by_status'
   get '/company_by_job_id', to: 'companies#company_by_job_id'
+
+  post 'users/forgot', to: "users#forgot"
+  post 'users/reset', to: "users#reset"
 end

@@ -46,7 +46,7 @@ class JobApplicationsController < ApplicationController
   end
 
   def application_by_status
-    application = JobApplication.where(status: params[:status])
+    application = JobApplication.send(:params[:status].downcase)
     return render json: { message: 'job application not found' } if application.blank?
 
     render json: application

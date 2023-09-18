@@ -7,8 +7,7 @@ class JobsController < ApplicationController
   end
 
   def create
-    company = @current_user.company
-    job = company.jobs.build(job_params)
+    job = @current_user&.company&.jobs&.build(job_params)
     return render json: { errors: job.errors.full_messages } unless job.save
 
     render json: { message: 'job created successfuly!' }, status: 200

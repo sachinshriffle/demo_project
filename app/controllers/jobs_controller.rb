@@ -7,16 +7,15 @@ class JobsController < ApplicationController
   end
 
   def create
-    job = @current_user&.company&.jobs&.build(job_params)
-    return render json: { errors: job.errors.full_messages } unless job.save
+    job = @current_user&.company&.jobs&.create!(job_params)
 
-    render json: { message: 'job created successfuly!' }, status: 200
+    render json: {data: job,  message: 'job created successfuly!' }, status: 200
   rescue Exception => e
-    render json: { errors: e.message }
+    render json: { errors: "you are not a job recruiter #{e.message}"}
   end
 
   def destroy
-    return render json: { errors: @job.errors.message } unless @job.destroy
+    @job.destroy!
 
     render json: { message: 'job deleted successfuly!' }
   rescue Exception => e
@@ -24,7 +23,7 @@ class JobsController < ApplicationController
   end
 
   def update
-    return render json: { errors: @job.errors.message } unless @job.update(jobs_params)
+ 		 @job.update!(jobs_params)
 
     render json: { message: 'job updated successfuly!' }
   rescue Exception => e
@@ -36,7 +35,7 @@ class JobsController < ApplicationController
   end
 
   def top_jobs
-    top_jobs = Job.joins(:job_applications).group(:id).order('COUNT(job_applications.id) DESC').limit(10)
+    top_jobs = Job.joins(:job_applications).select("jobs.* , count(job_applicatons)").group(:id).order('COUNT(job_applications.id) DESC').limit(10)
     return render	json: { message: 'No Applicants' } if top_jobs.blank?
 
     render json: top_jobs, status: :ok
@@ -50,7 +49,11 @@ class JobsController < ApplicationController
   end
 
   def search_jobs_by_company_name
-    jobs = Job.joins(:company).where('companies.company_name=?', params[:company_name])
+  	if params[:company_name]
+      result = Job.joins(:company).where("companies.company_name ilike '%?%'", params[:company_name])
+  	else
+  		result = Job.joins(:company).where("jobs.required_skills ilike '%?%'", params[:skill_name])
+  	end
     return render json: { message: 'job not available' }, status: :not_found if job.blank?
 
     render json: jobs
@@ -59,7 +62,7 @@ class JobsController < ApplicationController
   private
 
   def job_params
-    params.permit(:job_title, :required_skills, :company_id)
+    params.permit(:job_title, :company_id ,required_skills: [])
   end
 
   def set_job

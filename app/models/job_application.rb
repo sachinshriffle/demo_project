@@ -1,5 +1,5 @@
 class JobApplication < ApplicationRecord
-  belongs_to :user
+  belongs_to :job_seeker , class_name: 'JobSeeker' , foreign_key: 'job_seeker_id'
   belongs_to :job
   enum status: [:applied, :approved, :rejected]
   has_one_attached :resume

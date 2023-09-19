@@ -5,9 +5,14 @@ Rails.application.routes.draw do
   # root "articles#index"
   resources :users do
     get 'user_company', on: :collection
+    get 'forgot_password', on: :collection
+    get 'reset_password', on: :collection
   end
 
-  resources :companies, :skills, :job_applications
+  resources :companies, :job_applications
+  resources :skills do 
+    post 'add_skill', on: :collection
+  end
 
   resources :jobs do
     get 'current_company_jobs', on: :collection
@@ -22,8 +27,5 @@ Rails.application.routes.draw do
   get '/specific_job/:id', to: 'users#specific_job'
   get '/search_jobs_by_company_name', to: 'jobs#search_jobs_by_company_name'
   get '/application_by_status', to: 'job_applications#application_by_status'
-  get '/company_by_job_id', to: 'companies#company_by_job_id'
-
-  post 'users/forgot', to: "users#forgot"
-  post 'users/reset', to: "users#reset"
+  get '/company_by_job_id', to: 'companies#company_by_job_id' 
 end

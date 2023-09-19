@@ -8,11 +8,7 @@ class SkillsController < ApplicationController
   end
 
   def create
-    return render json: { message: 'you are not a jobseeker' } unless @current_user.type == 'JobSeeker'
-
     skill = Skill.create(skill_params)
-    skill = @current_user.skills << skill
-    return render json: { data: skill, message: 'skill created successfuly!' } if skill
 
     render json: { errors: skill.errors.messages }
   rescue Exception => e
@@ -20,7 +16,7 @@ class SkillsController < ApplicationController
   end
 
   def destroy
-    return render json: { message: 'skill not delete' } unless @skill.destroy
+    @skill.destroy
 
     render json: { message: 'skill deleted successfully!' }
   rescue Exception => e
@@ -28,7 +24,7 @@ class SkillsController < ApplicationController
   end
 
   def update
-    return render json: { errors: @skill.errors.full_messages } unless @skill.update(skill_params)
+    @skill.update(skill_params)
 
     render json: { message: 'skill updated successfully!' }
   rescue Exception => e
@@ -47,6 +43,14 @@ class SkillsController < ApplicationController
     return render	json: { message: "you don't have any skill" } unless skills
 
     render json: skills
+  end
+  
+  def add_skill
+  	skill = Skill.find_by(skill_name: params[:skill])
+  	@current_user.skills << skill
+  	render json: {message: "skill added successfully!"}
+  rescue Exception => e
+  	render json: e.message
   end
 
   private

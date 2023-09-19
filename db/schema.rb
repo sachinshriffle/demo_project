@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_18_130622) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_19_121940) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -43,28 +43,28 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_18_130622) do
     t.string "company_name"
     t.string "address"
     t.string "contact"
-    t.integer "user_id", null: false
+    t.integer "job_recruiter_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_companies_on_user_id"
+    t.index ["job_recruiter_id"], name: "index_companies_on_job_recruiter_id"
   end
 
   create_table "job_applications", force: :cascade do |t|
-    t.integer "user_id"
+    t.integer "job_seeker_id"
     t.integer "job_id"
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["job_id"], name: "index_job_applications_on_job_id"
-    t.index ["user_id"], name: "index_job_applications_on_user_id"
+    t.index ["job_seeker_id"], name: "index_job_applications_on_job_seeker_id"
   end
 
   create_table "jobs", force: :cascade do |t|
     t.string "job_title"
-    t.string "required_skills"
-    t.integer "company_id", null: false
+    t.integer "company_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "required_skills"
     t.index ["company_id"], name: "index_jobs_on_company_id"
   end
 
@@ -77,10 +77,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_18_130622) do
   create_table "skills_users", id: false, force: :cascade do |t|
     t.integer "skill_id", null: false
     t.integer "user_id", null: false
-    t.integer "users_id"
+    t.integer "job_seeker_id"
     t.integer "skills_id"
+    t.index ["job_seeker_id"], name: "index_skills_users_on_job_seeker_id"
     t.index ["skills_id"], name: "index_skills_users_on_skills_id"
-    t.index ["users_id"], name: "index_skills_users_on_users_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -97,6 +97,4 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_18_130622) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "companies", "users"
-  add_foreign_key "jobs", "companies"
 end

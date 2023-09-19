@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
   skip_before_action :authorize_request, only: [:create, :forgot, :reset]
-  skip_before_action :authorize_recruiter, except: :user_company
 
   def index
     users = User.paginate(page: params[:page], per_page: 5)
@@ -8,9 +7,8 @@ class UsersController < ApplicationController
   end
 
   def create
-    user = User.new(user_params)
-    return render json: { errors: user.errors.messages } unless user.save
-
+    user = User.create(user_params)
+    UserMailer.with(user: user).welcome_email.deliver_now	
     render json: { message: 'user created successfuly!' }, status: :ok
   rescue Exception => e
     render json: { errors: e.message }
@@ -40,14 +38,14 @@ class UsersController < ApplicationController
   end
 
   def user_company
-    company = Company.where(user_id: @current_user.id)
+    company = @current_user.company
     return render json: { message: 'you not create any company' } unless company.present?
 
     render json: company
   end
 
   def suggested_jobs
-    return render json: { message: 'you are not a job seeker' } unless @current_user.type == 'JobSeeker'
+    # return render json: { message: 'you are not a job seeker' } unless @current_user.type == 'JobSeeker'
 
     suggested_jobs = Job.where('required_skills in (?) ', @current_user.skills.pluck(:skill_name))
     return render json: { message: 'not available jobs for you' } if suggested_jobs.blank?
@@ -56,7 +54,7 @@ class UsersController < ApplicationController
   end
 
   def all_applied_jobs
-    return render json: { message: "you're not job seeker" } unless @current_user.type == 'JobSeeker'
+    # return render json: { message: "you're not job seeker" } unless @current_user.type == 'JobSeeker'
 
     result = @current_user.job_applications.where(status: 'applied')
     return render json: { message: 'you not apply any jobs' } if result.blank?
@@ -65,7 +63,7 @@ class UsersController < ApplicationController
   end
 
   def specific_job
-    return render json: { message: "you're not job seeker" } unless @current_user.type == 'JobSeeker'
+    # return render json: { message: "you're not job seeker" } unless @current_user.type == 'JobSeeker'
 
     job = @current_user.job_applications.find_by_id(params[:id])
     return render	json: { message: 'Job Not Found' } unless job
@@ -73,15 +71,12 @@ class UsersController < ApplicationController
     render json: job
   end
 
-  def forgot
-    if params[:email].blank? # check if email is present
-      return render json: {error: 'Email not present'}
-    end
-
-    @user = User.find_by(email: params[:email]) # if present find user by email
+  def forgot_password
+    return render json: {error: 'Email not present'} if params[:email].blank?
+    @user = User.find_by(email: params[:email])
 
     if @user.present?
-      @user.generate_password_token! #generate pass token
+      @user.generate_password_token!
       UserMailer.with(user: @user).forgot_password_token.deliver_now	
       render json: {status: 'reset link sent to your email'}, status: :ok
     else
@@ -89,24 +84,17 @@ class UsersController < ApplicationController
     end
   end
 
-  def reset
-    token = params[:token]
-
-    if params[:email].blank?
-      return render json: {error: 'Token not present'}
-    end
+  def reset_password
+    return render json: {error: 'Token not present'} unless token = params[:token]
+    return render json: {error: 'email not present'} if params[:email].blank?
 
     user = User.find_by(reset_password_token: token)
 
-    if user.present? && user.password_token_valid?
-      if user.reset_password!(params[:password])
-        render json: {status: 'ok'}, status: :ok
-      else
-        render json: {error: user.errors.full_messages}, status: :unprocessable_entity
-      end
-    else
-      render json: {error:  ["Link not valid or expired. Try generating a new link."]}, status: :not_found
-    end
+    return render json: {error:  ["Link not valid or expired. Try generating a new link."]}, status: :not_found unless user.present? && user.password_token_valid?
+    return render json: {status: 'successfuly!'}, status: :ok if user.reset_password!(params[:password])
+
+    render json: {error: user.errors.full_messages}, status: :unprocessable_entity
+ 
   end
 
   private

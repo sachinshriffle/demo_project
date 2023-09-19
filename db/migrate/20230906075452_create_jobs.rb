@@ -3,7 +3,7 @@ class CreateJobs < ActiveRecord::Migration[7.0]
     create_table :jobs do |t|
       t.string :job_title
       t.string :required_skills
-      t.references :company, foreign_key: true, null: false
+      t.belongs_to :company
 
       t.timestamps
     end

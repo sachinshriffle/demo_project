@@ -31,11 +31,13 @@ class JobsController < ApplicationController
   end
 
   def show
-    render json: @job
+  	job = Job.find_by_id(params[:id])
+  	render json: { message: 'Job not found' }, status: :not_found unless job
+    render json: job
   end
 
   def top_jobs
-    top_jobs = Job.joins(:job_applications).select("jobs.* , count(job_applicatons)").group(:id).order('COUNT(job_applications.id) DESC').limit(10)
+    top_jobs = Job.joins(:job_applications).select("jobs.* , count(job_applications.id) as job_application_count").group(:id).order('job_application_count DESC').limit(10)
     return render	json: { message: 'No Applicants' } if top_jobs.blank?
 
     render json: top_jobs, status: :ok
@@ -48,11 +50,11 @@ class JobsController < ApplicationController
     render json: jobs
   end
 
-  def search_jobs_by_company_name
+  def search_jobs_by_company_or_skill_name
   	if params[:company_name]
-      result = Job.joins(:company).where("companies.company_name ilike '%?%'", params[:company_name])
+      result = Job.joins(:company).where('companies.company_name ilike "%?%"', params[:company_name].downcase)
   	else
-  		result = Job.joins(:company).where("jobs.required_skills ilike '%?%'", params[:skill_name])
+  		result = Job.joins(:company).where('jobs.required_skills ilike "%?%"', params[:skill_name].downcase)
   	end
     return render json: { message: 'job not available' }, status: :not_found if job.blank?
 
@@ -66,7 +68,7 @@ class JobsController < ApplicationController
   end
 
   def set_job
-    @job = Job.find_by_id(params[:id])
+    @job = @current_user.company.jobs.find_by_id(params[:id])
     render json: { message: 'Job not found' }, status: :not_found unless @job
   end
 end

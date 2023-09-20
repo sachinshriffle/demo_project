@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_19_121940) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_20_070351) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -59,6 +59,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_121940) do
     t.index ["job_seeker_id"], name: "index_job_applications_on_job_seeker_id"
   end
 
+  create_table "job_seekers_skills", id: false, force: :cascade do |t|
+    t.integer "job_seeker_id", null: false
+    t.integer "skill_id", null: false
+    t.index ["job_seeker_id", "skill_id"], name: "index_job_seekers_skills_on_job_seeker_id_and_skill_id"
+    t.index ["skill_id", "job_seeker_id"], name: "index_job_seekers_skills_on_skill_id_and_job_seeker_id"
+  end
+
   create_table "jobs", force: :cascade do |t|
     t.string "job_title"
     t.integer "company_id"
@@ -72,15 +79,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_121940) do
     t.string "skill_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "skills_users", id: false, force: :cascade do |t|
-    t.integer "skill_id", null: false
-    t.integer "user_id", null: false
-    t.integer "job_seeker_id"
-    t.integer "skills_id"
-    t.index ["job_seeker_id"], name: "index_skills_users_on_job_seeker_id"
-    t.index ["skills_id"], name: "index_skills_users_on_skills_id"
   end
 
   create_table "users", force: :cascade do |t|

@@ -1,5 +1,4 @@
 class SkillsController < ApplicationController
-  skip_before_action :authorize_recruiter
   before_action :set_skill, only: [:destroy ,:update]
 
   def index
@@ -8,15 +7,15 @@ class SkillsController < ApplicationController
   end
 
   def create
-    skill = Skill.create(skill_params)
+    skill = Skill.create!(skill_params)
 
-    render json: { errors: skill.errors.messages }
+    render json: { message: "skill created successfully!"}
   rescue Exception => e
     render json: { errors: e.message }
   end
 
   def destroy
-    @skill.destroy
+    @skill.destroy!
 
     render json: { message: 'skill deleted successfully!' }
   rescue Exception => e
@@ -24,7 +23,7 @@ class SkillsController < ApplicationController
   end
 
   def update
-    @skill.update(skill_params)
+    @skill.update!(skill_params)
 
     render json: { message: 'skill updated successfully!' }
   rescue Exception => e
@@ -46,7 +45,8 @@ class SkillsController < ApplicationController
   end
   
   def add_skill
-  	skill = Skill.find_by(skill_name: params[:skill])
+  	skill = Skill.find_by(skill_name: params[:skill].downcase)
+  	return render json: {message: "skill name not found"} unless skill
   	@current_user.skills << skill
   	render json: {message: "skill added successfully!"}
   rescue Exception => e

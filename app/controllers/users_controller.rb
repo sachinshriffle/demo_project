@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   end
 
   def create
-    user = User.create(user_params)
+    user = User.create!(user_params)
     UserMailer.with(user: user).welcome_email.deliver_now	
     render json: { message: 'user created successfuly!' }, status: :ok
   rescue Exception => e
@@ -45,26 +45,19 @@ class UsersController < ApplicationController
   end
 
   def suggested_jobs
-    # return render json: { message: 'you are not a job seeker' } unless @current_user.type == 'JobSeeker'
-
-    suggested_jobs = Job.where('required_skills in (?) ', @current_user.skills.pluck(:skill_name))
+    suggested_jobs = Job.where('required_skills like ?', "%#{@current_user.skills.pluck(:skill_name)}%")
     return render json: { message: 'not available jobs for you' } if suggested_jobs.blank?
 
     render json: suggested_jobs
   end
 
   def all_applied_jobs
-    # return render json: { message: "you're not job seeker" } unless @current_user.type == 'JobSeeker'
-
-    result = @current_user.job_applications.where(status: 'applied')
+    result = @current_user.job_applications.applied
     return render json: { message: 'you not apply any jobs' } if result.blank?
-
     render json: result
   end
 
   def specific_job
-    # return render json: { message: "you're not job seeker" } unless @current_user.type == 'JobSeeker'
-
     job = @current_user.job_applications.find_by_id(params[:id])
     return render	json: { message: 'Job Not Found' } unless job
 

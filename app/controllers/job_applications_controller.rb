@@ -1,5 +1,4 @@
 class JobApplicationsController < ApplicationController
-  skip_before_action :authorize_recruiter, except: [:update, :destroy]
   before_action :set_application, only: [:update, :destroy ,:show]
 
   def index
@@ -8,21 +7,20 @@ class JobApplicationsController < ApplicationController
   end
 
   def apply
-    return render json: { message: 'you are not applicable for apply a job' } unless @current_user.type == 'JobSeeker'
-
     job = Job.find_by_id(params[:job_id])
+    return render json: {message: "job not available"} unless job
     resume = params[:resume]
-    job_application = JobApplication.new(user: @current_user, job: job, resume: resume, status: :applied)
-    return render json: { data: job_application, message: 'You have applied for the job successfully!' }, status: :created unless job_application.save
-
-    render json: { errors: job_application.errors.full_messages }
+    job_application = @current_user.job_applications.create!(job: job, resume: resume, status: :applied)
+    return render json: {message: 'You have applied for the job successfully!' }, status: :created unless job_application.save
+  rescue Exception => e
+    render json: {errors: e.message}
   end
 
   def update
-    unless @current_user == @application.job.company.user
-      return render json: { message: 'you have not access to change another application' }
-    end
-    unless @application.update(status: params[:status])
+    # unless @current_user == @application.job.company.user
+    #   return render json: { message: 'you have not access to change another application' }
+    # end
+    unless @application.update!(status: params[:status])
       return render json: { errors: @application.errors.full_messages }
     end
 
@@ -32,10 +30,10 @@ class JobApplicationsController < ApplicationController
   end
 
   def destroy
-    unless @current_user == @application.job.company.user
-      return	render json: { message: 'you have not access to change another application' }
-    end
-    @application.destroy
+    # unless @current_user == @application.job.company.user
+    #   return	render json: { message: 'you have not access to change another application' }
+    # end
+    @application.destroy!
     render json: { message: 'Job application deleted successfully!' }
   rescue Exception => e
     render json: { errors: e.message }
@@ -46,9 +44,12 @@ class JobApplicationsController < ApplicationController
   end
 
   def application_by_status
-    application = JobApplication.send(:params[:status].downcase)
-    return render json: { message: 'job application not found' } if application.blank?
-
+    if params[:status]
+     application = JobApplication.where(status: params[:status].downcase)
+     return render json: { message: 'job application not found' } if application.blank?
+    else
+     application = JobApplication.group(:status).pluck("status, group_concat(id)")  
+    end
     render json: application
   end
 

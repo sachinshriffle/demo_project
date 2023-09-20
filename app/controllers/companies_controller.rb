@@ -1,6 +1,6 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:update, :destroy, :show]
-  skip_before_action :authorize_request , only: :company_by_job_id
+  before_action :set_company, only: [:update, :destroy]
+  skip_before_action :authorize_request , only: [:company_by_job_id, :search]
 
   def index
     companies = Company.paginate(page: params[:page], per_page: 5)
@@ -15,22 +15,22 @@ class CompaniesController < ApplicationController
   end
 
   def destroy
-    return render json: { message: 'this is not your company' } if @current_user.id != @company.user_id
-    @company.destroy
+    @company.destroy!
     render json: { message: 'company deleted successfully!' }
   rescue Exception => e
     render json: { errors: e.message }
   end
 
   def update
-  	return render json: { message: 'this is not your company' } if @current_user.id != @company.user_id
-    @company.update(company_params)
+    @company.update!(company_params)
     render json: { data: @company, message: 'company updated successfuly!' }
   rescue Exception => e
     render json: { errors: e.message }
   end
 
   def show
+  	company = Company.find_by_id(params[:id])
+    return render json: { message: 'company not available' } unless company
     render json: @company
   end
 
@@ -38,6 +38,23 @@ class CompaniesController < ApplicationController
   	job = Job.find_by_id(params[:id])
   	return render json: {message: "job not available"} unless job
   	render json: job.company
+  end
+
+  def search 
+  	query = params[:search]
+  	return render json: {message: "not available"} if query.nil?
+  	@result = User.where('name like ?', "%#{query}%")
+  	if @result.blank?
+      @result = Company.where('company_name like ?',"%#{query}%")
+      if @result.blank?
+  		  @result = Skill.where('skill_name like ?',"%#{query}%")
+  		  if @result.blank?
+  		    @result = Job.where('job_title like ?',"%#{query}%")
+  		  end
+  		end
+  	end
+  	return render json: @result unless @result.blank?
+  	render json: {message: "data not found"}
   end
  
   private
@@ -47,7 +64,7 @@ class CompaniesController < ApplicationController
   end
 
   def set_company
-    @company = Company.find_by_id(params[:id])
+    @company = @current_user.company.find_by_id(params[:id])
     render json: { message: 'company not available' } unless @company
   end
 end

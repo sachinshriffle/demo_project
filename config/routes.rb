@@ -25,7 +25,8 @@ Rails.application.routes.draw do
   get '/all_applied_jobs', to: 'users#all_applied_jobs'
   get '/user_skills', to: 'skills#user_skills'
   get '/specific_job/:id', to: 'users#specific_job'
-  get '/search_jobs_by_company_name', to: 'jobs#search_jobs_by_company_name'
+  get '/search_jobs_by_company_or_skill_name', to: 'jobs#search_jobs_by_company_name'
   get '/application_by_status', to: 'job_applications#application_by_status'
   get '/company_by_job_id', to: 'companies#company_by_job_id' 
+  get '/search', to: 'companies#search'
 end

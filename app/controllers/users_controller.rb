@@ -73,7 +73,7 @@ class UsersController < ApplicationController
       UserMailer.with(user: @user).forgot_password_token.deliver_now	
       render json: {status: 'reset link sent to your email'}, status: :ok
     else
-      render json: {error: ["Email address not found. Please check and try again."]}, status: :not_found
+      render json: {message: "Email Address Not Found"}, status: :not_found
     end
   end
 

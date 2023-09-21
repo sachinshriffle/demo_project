@@ -45,7 +45,7 @@ class SkillsController < ApplicationController
   end
   
   def add_skill
-  	skill = Skill.find_by(skill_name: params[:skill].downcase)
+  	skill = Skill.find_by(skill_name: params[:skill_name].downcase)
   	return render json: {message: "skill name not found"} unless skill
   	@current_user.skills << skill
   	render json: {message: "skill added successfully!"}

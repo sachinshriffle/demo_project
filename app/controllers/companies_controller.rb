@@ -41,7 +41,7 @@ class CompaniesController < ApplicationController
   end
 
   def search 
-  	query = params[:search]
+  	query = params[:search].downcase
   	return render json: {message: "not available"} if query.nil?
   	@result = User.where('name like ?', "%#{query}%")
   	if @result.blank?

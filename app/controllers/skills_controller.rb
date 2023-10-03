@@ -2,14 +2,16 @@ class SkillsController < ApplicationController
   before_action :set_skill, only: [:destroy ,:update]
 
   def index
-    skill = Skill.paginate(page: params[:page], per_page: 10)
-    render json: skill
+    @skills = Skill.paginate(page: params[:page], per_page: 10)
   end
 
+  def new
+    @skill = Skill.new
+  end
   def create
-    skill = Skill.create!(skill_params)
-
-    render json: { message: "skill created successfully!"}
+    # byebug
+    @skill = Skill.create!(skill_params)
+    render status: :ok
   rescue Exception => e
     render json: { errors: e.message }
   end

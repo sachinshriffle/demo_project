@@ -2,16 +2,19 @@ class JobsController < ApplicationController
   before_action :set_job, only: [:destroy, :update, :show]
 
   def index
-    jobs = Job.paginate(page: params[:page], per_page: 5)
-    render json: jobs
+    @jobs = Job.paginate(page: params[:page], per_page: 5)
+  end
+ 
+  def new
+   @job = current_user&.company&.jobs&.build
   end
 
   def create
-    job = @current_user&.company&.jobs&.create!(job_params)
-
-    render json: {data: job,  message: 'job created successfuly!' }, status: 200
+    byebug
+    @job = current_user&.company&.jobs&.create!(job_params)
+    render :new
   rescue Exception => e
-    render json: { errors: "you are not a job recruiter #{e.message}"}
+    render :new
   end
 
   def destroy
@@ -64,7 +67,7 @@ class JobsController < ApplicationController
   private
 
   def job_params
-    params.permit(:job_title, :company_id ,required_skills: [])
+    params.require(:job).permit(:job_title, :company_id ,required_skills: [])
   end
 
   def set_job

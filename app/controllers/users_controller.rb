@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  skip_before_action :authorize_request, only: [:create, :forgot, :reset]
+  # skip_before_action :authorize_request, only: [:create, :forgot, :reset]
 
   def index
     users = User.paginate(page: params[:page], per_page: 5)

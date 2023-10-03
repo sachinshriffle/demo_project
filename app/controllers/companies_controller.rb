@@ -1,17 +1,19 @@
 class CompaniesController < ApplicationController
   before_action :set_company, only: [:update, :destroy]
-  skip_before_action :authorize_request , only: [:company_by_job_id, :search]
 
   def index
-    companies = Company.paginate(page: params[:page], per_page: 5)
-    render json: companies
+    @companies = Company.paginate(page: params[:page], per_page: 5)
+  end
+
+  def new
+    @company = current_user.create_company
   end
 
   def create
-    company = @current_user.create_company(company_params)
-    render json: { data: company, message: 'company created successfuly!' }, status: :ok
+    @company = current_user.create_company!(company_params)
+    redirect_to  root_path
   rescue Exception => e
-    render json: { errors: "you are not a job recruter"}
+    render :new
   end
 
   def destroy
@@ -60,11 +62,11 @@ class CompaniesController < ApplicationController
   private
 
   def company_params
-    params.require(:company).permit(:company_name, :address, :contact)
+    params.require(:company).permit(:job_recruiter_id, :company_name, :address, :contact)
   end
 
   def set_company
-    @company = @current_user.company.find_by_id(params[:id])
+    @company = current_user.company.find_by_id(params[:id])
     render json: { message: 'company not available' } unless @company
   end
 end

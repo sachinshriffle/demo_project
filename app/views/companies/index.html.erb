@@ -1,0 +1,33 @@
+<h1>Listing Company</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th> Company </th>
+      <th> Address </th>
+      <th> Contact </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @companies.each do |company| %>
+      <tr>
+        <td><%= company.company_name %></td>
+        <td><%= company.address %></td>
+        <td><%= company.contact %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to "see all jobs", jobs_path %> <br />
+<%- if current_user.type == "JobRecruiter" %>
+  <%- if current_user.company.present? %>
+    <%= link_to "create job", new_job_path %> <br />
+  <% else %>
+    <%= link_to "create new company" , new_company_path %>
+  <% end %>
+<%- else %>
+   <%= link_to "create skill", new_skill_path %> <br />
+   <%= link_to "see skills", skills_path %> <br />
+<% end %>

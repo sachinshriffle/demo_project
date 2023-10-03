@@ -1,0 +1,14 @@
+<h> New skill </h>
+
+<%= form_with model: @skill do |skill| %>
+	<div class="field">
+		<%= skill.label :skill_name%><br>
+		<%= skill.text_field :skill_name %> 
+	</div>
+
+	<div class="field">
+		<%= skill.submit "create" %>
+	</div>
+<% end %> 
+
+<%= link_to "back", root_path %> <br />

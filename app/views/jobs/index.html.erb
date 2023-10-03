@@ -1,0 +1,22 @@
+<h1>Listing Jobs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th> Job </th>
+      <th> Required_skills </th>
+      <th> company name </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @jobs.each do |job| %>
+      <tr>
+        <td><%= job.job_title %></td>
+        <td><%= job.required_skills %></td>
+        <td><%= job.company.company_name%></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= link_to "back", root_path %> <br />

@@ -1,0 +1,18 @@
+<h1>Listing skills</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th> skills</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @skills.each do |job| %>
+      <tr>
+        <td><%= job.skill_name %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= link_to "back", root_path %> <br />

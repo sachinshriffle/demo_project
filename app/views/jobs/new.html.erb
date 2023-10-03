@@ -1,0 +1,20 @@
+<h> New job </h>
+
+<%= form_with model: @job do |job| %>
+	<div class="field">
+		<%= job.label :job_title %><br>
+		<%= job.text_field :job_title %> 
+	</div>
+
+	<div class="field">
+		<%= job.label :required_skills %><br>
+		<%= job.text_area :required_skills %>
+	</div>
+
+	<div class="field">
+		<%= job.submit "create" %>
+	</div>
+
+<% end %> 
+
+<%= link_to "back", root_path %> <br />

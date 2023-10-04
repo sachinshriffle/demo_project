@@ -1,0 +1,13 @@
+<h1>add your skill</h1>
+
+<%= form_with model: @skill do |skill| %>
+	<div class="field">
+		<%= skill.label :skill %><br>
+		<%= skill.select :skill, options_for_select(Skill.pluck(:skill_name)), {:multiple => :multiple, :size => 10} %>
+	</div>
+
+	<div class="field">
+		<%= skill.submit "create" %>
+	</div>
+
+<% end %> 

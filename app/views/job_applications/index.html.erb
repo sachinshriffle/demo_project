@@ -1,0 +1,23 @@
+<h1>Job Applications</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th> name </th>
+      <th> job title</th>
+      <th> status</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @job_application.each do |job_application| %>
+      <tr>
+        <td><%= job_application.job_seeker.name %></td>
+        <td><%= job_application.job.job_title %></td>
+        <td><%= job_application.status %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to "back", root_path %> <br />

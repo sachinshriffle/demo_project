@@ -4,6 +4,9 @@
 	<div class="field">
 		<%= skill.label :skill_name%><br>
 		<%= skill.text_field :skill_name %> 
+		<% @skill.errors.full_messages_for(:skill_name).each do |message| %>
+      <div><%= message %></div>
+    <% end %>
 	</div>
 
 	<div class="field">

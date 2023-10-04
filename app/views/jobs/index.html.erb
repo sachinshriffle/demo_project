@@ -5,7 +5,7 @@
     <tr>
       <th> Job </th>
       <th> Required_skills </th>
-      <th> company name </th>
+      <!-- <th> company name </th> -->
     </tr>
   </thead>
 
@@ -14,7 +14,8 @@
       <tr>
         <td><%= job.job_title %></td>
         <td><%= job.required_skills %></td>
-        <td><%= job.company.company_name%></td>
+        <!-- <td><%= job.company.company_name%></td> -->
+        <td><%= link_to "apply job", apply_path(:job_id => job.id)%></td>
       </tr>
     <% end %>
   </tbody>

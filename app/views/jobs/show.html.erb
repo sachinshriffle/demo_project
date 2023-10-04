@@ -1,0 +1,5 @@
+
+<h1>Job Title: <%=@job.job_title %></h1>
+ 
+<p> Required Skills: <%=@job.required_skills %></p>
+<%= link_to "apply job", apply_path(:job_id => job.id)%>

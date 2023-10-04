@@ -1,0 +1,6 @@
+
+<h1>Company Name: <%=@company.company_name %></h1>
+ 
+<p> Address: <%=@company.address %></p>
+<p> Contact: <%=@company.contact %></p><br/>
+<%= link_to "jobs", current_company_jobs_jobs_path(:company_id => @company.id)%>

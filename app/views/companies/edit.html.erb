@@ -1,0 +1,22 @@
+<h> New Company </h>
+
+<%= form_with model: @company do |company| %>
+	<div class="field">
+		<%= company.label :company_name %><br>
+		<%= company.text_field :company_name %> 
+	</div>
+
+
+	<div class="field">
+		<%= company.label :address %><br>
+		<%= company.text_field :address %>
+	</div>
+
+	<div class="field">
+		<%= company.label :contact %><br>
+		<%= company.text_field :contact %>
+	</div>
+
+	<div class="field">
+		<%= company.submit "create" %>
+	</div>

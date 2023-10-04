@@ -14,6 +14,8 @@
     <%- if user_signed_in? %>
       <%= link_to "Sign out", destroy_user_session_path %> <br />
     <% end %>
+    <% if notice %> <p class="alert alert-success"><%= notice %></p> <% end %>
+    <% if alert %> <p class="alert alert-danger"><%= alert %></p> <% end %>
     <%= yield %>
   </body>
 </html>

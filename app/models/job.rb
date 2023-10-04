@@ -1,5 +1,5 @@
 class Job < ApplicationRecord
-	serialize :required_skills, Array
+  serialize :required_skills, Array
   belongs_to :company
   # delegate :job_recruiter , to: :company , prefix: true
 

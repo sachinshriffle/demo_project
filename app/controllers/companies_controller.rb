@@ -23,17 +23,21 @@ class CompaniesController < ApplicationController
     render json: { errors: e.message }
   end
 
+  def edit
+     @company
+  end
+
   def update
     @company.update!(company_params)
-    render json: { data: @company, message: 'company updated successfuly!' }
+    # render json: { data: @company, message: 'company updated successfuly!'}
   rescue Exception => e
     render json: { errors: e.message }
   end
 
   def show
-  	company = Company.find_by_id(params[:id])
-    return render json: { message: 'company not available' } unless company
-    render json: @company
+  	@company = Company.find_by_id(params[:id])
+    # return render json: { message: 'company not available' } unless company
+    # render json: @company
   end
 
   def company_by_job_id
@@ -66,7 +70,7 @@ class CompaniesController < ApplicationController
   end
 
   def set_company
-    @company = current_user.company.find_by_id(params[:id])
+    @companys = current_user.company.find_by_id(params[:company_id])
     render json: { message: 'company not available' } unless @company
   end
 end

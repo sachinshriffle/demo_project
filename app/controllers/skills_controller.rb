@@ -9,9 +9,10 @@ class SkillsController < ApplicationController
     @skill = Skill.new
   end
   def create
-    # byebug
-    @skill = Skill.create!(skill_params)
-    render status: :ok
+    @skill = Skill.new(skill_params)
+    if @skill.save
+      flash.now[:alert] = "skill create successfully!"
+    end
   rescue Exception => e
     render json: { errors: e.message }
   end
@@ -47,10 +48,9 @@ class SkillsController < ApplicationController
   end
   
   def add_skill
-  	skill = Skill.find_by(skill_name: params[:skill_name].downcase)
-  	return render json: {message: "skill name not found"} unless skill
-  	@current_user.skills << skill
-  	render json: {message: "skill added successfully!"}
+    @skill = current_user.skills.create(skill_name: @skill)
+  	# return render json: {message: "skill name not found"} unless skill
+  	# render json: {message: "skill added successfully!"}
   rescue Exception => e
   	render json: e.message
   end
@@ -58,7 +58,7 @@ class SkillsController < ApplicationController
   private
 
   def skill_params
-    params.permit(:skill_name)
+    params.require(:skill).permit(:skill_name)
   end
 
   def set_skill

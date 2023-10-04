@@ -8,10 +8,10 @@ class JobApplicationsController < ApplicationController
 
   def apply
     job = Job.find_by_id(params[:job_id])
-    return render json: {message: "job not available"} unless job
+    # return render json: {message: "job not available"} unless job
     resume = params[:resume]
-    job_application = @current_user.job_applications.create!(job: job, resume: resume, status: :applied)
-    return render json: {message: 'You have applied for the job successfully!' }, status: :created if job_application.save
+    @job_application = current_user.job_applications.create!(job: job, resume: resume, status: :applied)
+    # return render json: {message: 'You have applied for the job successfully!' }, status: :created if job_application.save
   rescue Exception => e
     render json: {errors: e.message}
   end

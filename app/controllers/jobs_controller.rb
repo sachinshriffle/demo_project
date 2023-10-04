@@ -47,10 +47,11 @@ class JobsController < ApplicationController
   end
 
   def current_company_jobs
-    jobs = @current_user.company.jobs
-    return render json: { message: 'this company has no jobs' }, status: :not_found if jobs.blank?
+    company = Company.find_by_id(params[:company_id])
+    @jobs = company.jobs
+    return render json: { message: 'this company has no jobs' }, status: :not_found if @jobs.blank?
 
-    render json: jobs
+    render :index
   end
 
   def search_jobs_by_company_or_skill_name

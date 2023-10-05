@@ -20,6 +20,10 @@ class JobApplicationsController < ApplicationController
     render json: {errors: e.message}
   end
 
+  def edit
+    @application
+  end
+
   def update
     unless @current_user.id == @application.job_company.job_recruiter_id
       return render json: { message: 'you have not access to change another application' }

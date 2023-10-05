@@ -11,7 +11,7 @@ class SkillsController < ApplicationController
   def create
     @skill = Skill.new(skill_params)
     if @skill.save
-      flash.now[:alert] = "skill create successfully!"
+      flash[:alert] = "skill create successfully!"
       redirect_to root_path
     end
   rescue Exception => e

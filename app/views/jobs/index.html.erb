@@ -1,26 +1,23 @@
-<h1>Listing Jobs</h1>
+<div style="text-align: center;">
+  <h1 style="font-size: 24px; margin-bottom: 20px;">Listing Jobs</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th> Job </th>
-      <th> Required_skills </th>
-      <!-- <th> company name </th> -->
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @jobs.each do |job| %>
+  <table style="width: 100%; border-collapse: collapse;">
+    <thead>
       <tr>
-        <td><%= job.job_title %></td>
-        <td><%= job.required_skills %></td>
-        <!-- <td><%= job.company.company_name%></td> -->
-        <%- if current_user.type == "JobSeeker" %>
-          <td><%= link_to "apply job", new_job_application_path(:job_id => job.id)%></td>
-        <% elsif current_user.company.jobs.present? %>
-          <td><%= job.job_applications.pluck(:status)%></td>
-        <% end %>
+        <th style="border: 1px solid #000; padding: 8px;">Job</th>
+        <th style="border: 1px solid #000; padding: 8px;">Required Skills</th>
+        <th style="border: 1px solid #000; padding: 8px;">Actions</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+
+    <tbody>
+      <% @jobs.each do |job| %>
+        <tr>
+          <td style="border: 1px solid #000; padding: 8px;"><%= job.job_title %></td>
+          <td style="border: 1px solid #000; padding: 8px;"><%= job.required_skills %></td>
+          <td style="border: 1px solid #000; padding: 8px;"><%= link_to "Apply Job", apply_path(job_id: job.id), style: 'text-decoration: none; color: #007BFF;' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

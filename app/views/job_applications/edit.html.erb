@@ -1,0 +1,28 @@
+<h1>Update Job Application</h1>
+
+<div>
+  <strong>Job Title:</strong> <%= @application.job.job_title %>
+</div>
+
+<div>
+  <strong>Status:</strong> <%= @application.status %>
+</div>
+
+<% if @application.status == 'applied' %>
+  <%= form_with model: @application, url: job_application_path(@application), method: :patch do |application| %>
+    <div class="field">
+      <%= application.label :status %><br>
+      <%= application.select :status, options_for_select(['accepted', 'rejected']), {}, class: 'status-select' %>
+    </div>
+
+    <div class="field">
+      <%= application.submit "Update Status" %>
+    </div>
+  <% end %>
+<% else %>
+  <div>
+    <strong>Cannot update status:</strong> The application status is no longer 'applied'.
+  </div>
+<% end %>
+
+<%= link_to "Back to Job Application", job_application_path(@application), class: 'btn btn-primary' %>

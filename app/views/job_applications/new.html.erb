@@ -1,13 +1,17 @@
-<h1>Apply job</h1>
+<h1>Apply Job </h1>
+<%= form_with model: @job_application, html: { class: 'job-application-form' } do |job_application| %>
+  <!-- Hidden field for job_id -->
+  <%= job_application.hidden_field :job_id, value: @job.id %>
+  
+  <!-- Hidden field for status -->
+  <%= job_application.hidden_field :status, value: "applied" %>
 
-<%= form_with model: @job_application  do |job_application| %>
-	<div class="field">
-		<%= job_application.label :resume %><br>
-		<%= job_application.file_field :resume %> 
-	</div>
+  <div class="field">
+    <%= job_application.label :resume, class: 'form-label' %><br>
+    <%= job_application.file_field :resume, class: 'form-file-input' %> 
+  </div>
 
-	<div class="field">
-		<%= job_application.submit "create" ,class: 'btn btn-primary' %>
-	</div>
-
-<% end %> 
+  <div class="field">
+    <%= job_application.submit "Create", class: 'btn btn-primary submit-button' %>
+  </div>
+<% end %>

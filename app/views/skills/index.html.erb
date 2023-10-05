@@ -1,17 +1,18 @@
-<h1>Listing skills</h1>
+<h1 style="font-size: 24px; margin-bottom: 20px;">Listing Skills</h1>
 
-<table>
+<table style="border-collapse: collapse; width: 100%;">
   <thead>
     <tr>
-      <th> skills</th>
+      <th style="border: 1px solid #000; padding: 8px;">Skills</th>
     </tr>
   </thead>
 
   <tbody>
-    <% @skills.each do |job| %>
+    <% @skills.each do |skill| %>
       <tr>
-        <td><%= job.skill_name %></td>
+        <td style="border: 1px solid #000; padding: 8px;"><%= skill.skill_name %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+

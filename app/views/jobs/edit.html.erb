@@ -1,18 +1,27 @@
-<h> New job </h>
+<div style="text-align: center;">
+  <h1 style="font-size: 24px; margin-bottom: 20px;">New Job</h1>
 
-<%= form_with model: @job do |job| %>
-	<div class="field">
-		<%= job.label :job_title %><br>
-		<%= job.text_field :job_title %> 
-	</div>
+  <%= form_with model: @job, html: { class: 'job-form' } do |job| %>
+    <div class="field" style="margin-bottom: 15px;">
+      <%= job.label :job_title, style: 'font-weight: bold;' %><br>
+      <%= job.text_field :job_title, class: 'job-input' %>
+    </div>
 
-	<div class="field">
-		<%= job.label :required_skills %><br>
-		<%= job.text_field :required_skills , class: 'skill_input' %>
-	</div>
+    <div class="field" style="margin-bottom: 15px;">
+      <%= job.label :required_skills, 'Required Skills (comma-separated)', style: 'font-weight: bold;' %><br>
+      <% if @job.errors.any? %>
+        <ul style="list-style-type: none; padding: 0; margin-top: 5px;">
+          <% @job.errors[:required_skills].each do |error| %>
+            <li style="color: red;"><%= error %></li>
+          <% end %>
+        </ul>
+      <% end %>
+      <%= job.text_field :required_skills, class: 'skill-input' %>
+    </div>
 
-	<div class="field">
-		<%= job.submit "create" %>
-	</div>
-
-<% end %> 
+    <div class="field" style="margin-bottom: 20px;">
+      <%= job.submit "Create", class: 'job-button' %>
+    </div>
+  <% end %>
+</div>
+ 

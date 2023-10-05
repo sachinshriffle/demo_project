@@ -1,12 +1,17 @@
 
-<h1>Company Name: <%=@company.company_name %></h1>
+<h1 style="font-size: 24px; margin-bottom: 20px;">Company Name: <%= @company.company_name %></h1>
  
-<p> Address: <%=@company.address %></p>
-<p> Contact: <%=@company.contact %></p><br/>
-<%= link_to "jobs", current_company_jobs_jobs_path(:company_id => @company.id)%>
+<p style="font-weight: bold;">Address: <%= @company.address %></p>
+<p style="font-weight: bold;">Contact: <%= @company.contact %></p>
+<br/>
 
-<%- if current_user.type == "JobRecruiter" %>
+<%= link_to "Jobs", current_company_jobs_jobs_path(:company_id => @company.id), style: 'text-decoration: none; color: #007BFF;' %>
+
+<% if current_user.type == "JobRecruiter" %>
   <% if current_user.company.present? %>
-		<li  style ="background_color: #ffffff; display: inline-block; margin-left: 70px; padding-top: 35px;"><%= link_to "create job", new_job_path %></li>
-	<%end %>
+    <li style="background-color: #ffffff; display: inline-block; margin-left: 70px; padding-top: 35px;">
+      <%= link_to "Create Job", new_job_path, style: 'text-decoration: none; color: #007BFF;' %>
+    </li>
+  <% end %>
 <% end %>
+

@@ -1,13 +1,12 @@
-<h1>add your skill</h1>
+<h1 style="font-size: 24px; margin-bottom: 20px;">Add Your Skills</h1>
 
-<%= form_with model: @skill do |skill| %>
-	<div class="field">
-		<%= skill.label :skill %><br>
-		<%= skill.select :skill, options_for_select(Skill.pluck(:skill_name)), {:multiple => :multiple, :size => 10} %>
-	</div>
+<%= form_with model: @skill, url: add_skill_path, method: :post do |skill| %>
+  <div class="field">
+    <%= skill.label :skills, 'Select Skills (Hold Ctrl/Cmd to select multiple)', style: 'font-weight: bold;' %><br>
+    <%= skill.select :skills, options_for_select(Skill.pluck(:skill_name)), { multiple: true, size: 10 }, class: 'skill-input' %>
+  </div>
 
-	<div class="field">
-		<%= skill.submit "create" %>
-	</div>
-
-<% end %> 
+  <div class="field" style="margin-top: 20px;">
+    <%= skill.submit "Create", class: 'skill-button' %>
+  </div>
+<% end %>

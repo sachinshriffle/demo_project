@@ -12,6 +12,7 @@ class SkillsController < ApplicationController
     @skill = Skill.new(skill_params)
     if @skill.save
       flash.now[:alert] = "skill create successfully!"
+      redirect_to root_path
     end
   rescue Exception => e
     render json: { errors: e.message }
@@ -48,7 +49,13 @@ class SkillsController < ApplicationController
   end
   
   def add_skill
-    @skill = current_user.skills.create(skill_name: @skill)
+    skill_name = params[:skill][:skills] || []
+    skills = Skill.where(skill_name: skill_name)
+    if skills.any?
+      current_user.skills << skills
+      redirect_to request.referer
+    else
+      redirect_to request.referer
   	# return render json: {message: "skill name not found"} unless skill
   	# render json: {message: "skill added successfully!"}
   rescue Exception => e

@@ -22,7 +22,6 @@ Rails.application.routes.draw do
   end
 
 #   post '/auth/login', to: 'authentication#login'
-  get '/apply', to: 'job_applications#apply'
 #   get '/suggested_jobs', to: 'users#suggested_jobs'
 #   get '/top_jobs', to: 'jobs#top_jobs'
 #   get '/all_applied_jobs', to: 'users#all_applied_jobs'

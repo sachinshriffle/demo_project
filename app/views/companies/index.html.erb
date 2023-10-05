@@ -1,5 +1,4 @@
 <h1>Welcome To LinkedIn Job Portal </h1>
-
 <table>
   <thead>
     <tr>
@@ -19,16 +18,14 @@
       </tr>
     <% end %>
   </tbody>
-</table>
+</table>  
 <%- if current_user.type == "JobRecruiter" %>
-  <%- if current_user.company.present? %>
-    <%= link_to "edit company", edit_company_path(company_id: @companies.id) %> <br />
-    <%= link_to "create job", new_job_path %> <br />
-  <% else %>
-    <%= link_to "create new company" , new_company_path %>
+  <% if current_user.company.blank? %>
+    <li style ="display: inline-block; margin-left: 70px; padding-top: 35px;"><%= link_to "create new company" , new_company_path %></li>
   <% end %>
-<%- else %>
-  <%= link_to "create skill", new_skill_path %> <br />
-  <%= link_to "see skills", skills_path %> <br />
-  <%= link_to "add your skills", add_skill_skills_path %> <br />
+<%- elsif current_user.type == "JobSeeker" %>
+  <li style ="display: inline-block; margin-left: 70px; padding-top: 35px;"><%= link_to "create skill", new_skill_path %></li>
+  <li style ="display: inline-block; margin-left: 70px; padding-top: 35px;"><%= link_to "see skills", skills_path %></li>
+  <li style ="display: inline-block; margin-left: 70px; padding-top: 35px;"><%= link_to "add your skills", add_skill_skills_path %></li>
 <% end %>
+      

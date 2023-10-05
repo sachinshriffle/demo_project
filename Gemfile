@@ -76,3 +76,4 @@ gem "active_model_serializers"
 gem "byebug"
 gem 'rubocop', require: false
 gem 'will_paginate', '~> 4.0'
+gem 'devise'

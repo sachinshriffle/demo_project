@@ -1,13 +1,13 @@
 <h1>Apply job</h1>
 
-<%= form_with model: @job_application do |job_application| %>
+<%= form_with model: @job_application  do |job_application| %>
 	<div class="field">
 		<%= job_application.label :resume %><br>
 		<%= job_application.file_field :resume %> 
 	</div>
 
 	<div class="field">
-		<%= job_application.submit "create" %>
+		<%= job_application.submit "create" ,class: 'btn btn-primary' %>
 	</div>
 
 <% end %> 

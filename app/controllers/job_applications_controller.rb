@@ -2,15 +2,19 @@ class JobApplicationsController < ApplicationController
   before_action :set_application, only: [:update, :destroy ,:show]
 
   def index
-    application = JobApplication.all
-    render json: application
+    @applications = JobApplication.all
   end
 
-  def apply
-    job = Job.find_by_id(params[:job_id])
-    # return render json: {message: "job not available"} unless job
-    resume = params[:resume]
-    @job_application = current_user.job_applications.create!(job: job, resume: resume, status: :applied)
+  def new
+    @job = Job.find_by_id(params[:job_id])
+    @job_application = @job.job_applications.new
+  end
+
+  def create
+    @job = Job.find_by_id(params[:job_id])
+    @job_application = @job.job_applications.new(set_params)
+    current_user.job_application << @job_application
+    # @job_application.save
     # return render json: {message: 'You have applied for the job successfully!' }, status: :created if job_application.save
   rescue Exception => e
     render json: {errors: e.message}
@@ -56,5 +60,9 @@ class JobApplicationsController < ApplicationController
   def set_application
     @application = JobApplication.find_by_id(params[:id])
     render json: { message: 'application not found' } unless @application
+  end
+
+  def set_params
+    params.permit(:job_id, :job_seeker_id, :resume, :status => "applied")
   end
 end

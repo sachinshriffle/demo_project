@@ -15,9 +15,12 @@
         <td><%= job.job_title %></td>
         <td><%= job.required_skills %></td>
         <!-- <td><%= job.company.company_name%></td> -->
-        <td><%= link_to "apply job", apply_path(:job_id => job.id)%></td>
+        <%- if current_user.type == "JobSeeker" %>
+          <td><%= link_to "apply job", new_job_application_path(:job_id => job.id)%></td>
+        <% elsif current_user.company.jobs.present? %>
+          <td><%= job.job_applications.pluck(:status)%></td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
 </table>
-<%= link_to "back", root_path %> <br />

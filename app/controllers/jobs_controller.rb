@@ -6,13 +6,14 @@ class JobsController < ApplicationController
   end
  
   def new
-   @job = current_user&.company&.jobs&.build
+   @job = current_user&.company&.jobs&.new
   end
 
   def create
-    byebug
-    @job = current_user&.company&.jobs&.create!(job_params)
-    render :new
+    @job = current_user&.company&.jobs&.new(job_params)
+    @job.required_skills = params[:job][:required_skills].split(',').map(&:strip) if params[:job][:required_skills].present?
+    @job.save
+    redirect_to root_path
   rescue Exception => e
     render :new
   end
@@ -49,9 +50,12 @@ class JobsController < ApplicationController
   def current_company_jobs
     company = Company.find_by_id(params[:company_id])
     @jobs = company.jobs
-    return render json: { message: 'this company has no jobs' }, status: :not_found if @jobs.blank?
-
-    render :index
+    if @jobs.blank?
+      redirect_to request.referer
+      flash.now[:alert] = "not available jobs"
+    else
+      render :index
+    end
   end
 
   def search_jobs_by_company_or_skill_name

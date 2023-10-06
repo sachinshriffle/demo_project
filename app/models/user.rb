@@ -4,6 +4,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
   validates :name, presence: true, length: { minimum: 3, case_sensitive: false }
+  validates :type, presence: true
 
 	# def generate_password_token!
 	# 	self.reset_password_token = generate_token

@@ -12,7 +12,7 @@
   <%= form_with model: @application, url: job_application_path(@application), method: :patch do |application| %>
     <div class="field">
       <%= application.label :status %><br>
-      <%= application.select :status, options_for_select(['accepted', 'rejected']), {}, class: 'status-select' %>
+      <%= application.select :status, [:approved, :rejected] %>
     </div>
 
     <div class="field">
@@ -21,8 +21,8 @@
   <% end %>
 <% else %>
   <div>
-    <strong>Cannot update status:</strong> The application status is no longer 'applied'.
+    <strong>Cannot update status:</strong> The application status is no longer applied.
   </div>
 <% end %>
 
-<%= link_to "Back to Job Application", job_application_path(@application), class: 'btn btn-primary' %>
+<%= link_to "Back to Job Application", request.referer, class: 'btn btn-primary' %>

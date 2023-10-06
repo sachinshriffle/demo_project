@@ -1,9 +1,9 @@
 <h1 style="font-size: 24px; margin-bottom: 20px;">Add Your Skills</h1>
 
-<%= form_with model: @skill, url: add_skill_path, method: :post do |skill| %>
+<%= form_with model: @skill, url: add_skill_skills_path do |skill| %>
   <div class="field">
-    <%= skill.label :skills, 'Select Skills (Hold Ctrl/Cmd to select multiple)', style: 'font-weight: bold;' %><br>
-    <%= skill.select :skills, options_for_select(Skill.pluck(:skill_name)), { multiple: true, size: 10 }, class: 'skill-input' %>
+    <%= skill.label :skills, style: 'font-weight: bold;' %><br>
+    <%= skill.select :skills, options_for_select(Skill.pluck(:skill_name)), { multiple: true, size: 10 } %>
   </div>
 
   <div class="field" style="margin-top: 20px;">

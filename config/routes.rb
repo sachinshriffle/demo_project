@@ -12,9 +12,14 @@ Rails.application.routes.draw do
   devise_scope :user do
     get '/users/sign_out', to: 'devise/sessions#destroy'
   end
-  resources :companies, :job_applications
+  resources :companies
+  resources :job_applications do 
+  	get 'applied_jobs', on: :collection
+  end
+
   resources :skills do 
     get 'add_skill', on: :collection
+    get 'user_skills', on: :collection
   end
 
   resources :jobs do
@@ -24,11 +29,10 @@ Rails.application.routes.draw do
 #   post '/auth/login', to: 'authentication#login'
 #   get '/suggested_jobs', to: 'users#suggested_jobs'
 #   get '/top_jobs', to: 'jobs#top_jobs'
-#   get '/all_applied_jobs', to: 'users#all_applied_jobs'
 #   get '/user_skills', to: 'skills#user_skills'
 #   get '/specific_job/:id', to: 'users#specific_job'
 #   get '/search_jobs_by_company_or_skill_name', to: 'jobs#search_jobs_by_company_name'
 #   get '/application_by_status', to: 'job_applications#application_by_status'
 #   get '/company_by_job_id', to: 'companies#company_by_job_id' 
 #   get '/search', to: 'companies#search'
- end
+end

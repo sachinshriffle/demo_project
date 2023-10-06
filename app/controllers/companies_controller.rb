@@ -2,7 +2,13 @@ class CompaniesController < ApplicationController
   before_action :set_company, only: [:update, :destroy]
 
   def index
-    @companies = Company.paginate(page: params[:page], per_page: 5)
+    if current_user.type == "JobRecruiter" && current_user.company.present?
+      # render :user_company
+      @company = current_user.company
+      render :show
+    else
+      @companies = Company.paginate(page: params[:page], per_page: 5)
+    end
   end
 
   def new
@@ -24,7 +30,7 @@ class CompaniesController < ApplicationController
   end
 
   def edit
-     @company
+    @company
   end
 
   def update
@@ -45,6 +51,13 @@ class CompaniesController < ApplicationController
   	return render json: {message: "job not available"} unless job
   	render json: job.company
   end
+
+  # def user_company
+  #   @company = current_user.company
+  #   return render json: { message: 'you not create any company' } unless company.present?
+
+  #   render json: company
+  # end
 
   def search 
   	query = params[:search].downcase

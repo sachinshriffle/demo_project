@@ -37,24 +37,11 @@ class UsersController < ApplicationController
     render json: user
   end
 
-  def user_company
-    company = @current_user.company
-    return render json: { message: 'you not create any company' } unless company.present?
-
-    render json: company
-  end
-
   def suggested_jobs
     suggested_jobs = Job.where('required_skills like ?', "%#{@current_user.skills.pluck(:skill_name)}%")
     return render json: { message: 'not available jobs for you' } if suggested_jobs.blank?
 
     render json: suggested_jobs
-  end
-
-  def all_applied_jobs
-    result = @current_user.job_applications.applied
-    return render json: { message: 'you not apply any jobs' } if result.blank?
-    render json: result
   end
 
   def specific_job

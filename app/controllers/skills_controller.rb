@@ -8,6 +8,7 @@ class SkillsController < ApplicationController
   def new
     @skill = Skill.new
   end
+
   def create
     @skill = Skill.new(skill_params)
     if @skill.save
@@ -20,10 +21,12 @@ class SkillsController < ApplicationController
 
   def destroy
     @skill.destroy!
-
-    render json: { message: 'skill deleted successfully!' }
+    flash[:alert] = "skill deleted successfully!"
+    redirect_to request.referer
+    # render json: { message: 'skill deleted successfully!' }
   rescue Exception => e
-    render json: { errors: e.message }
+    # render json: { errors: e.message }
+    flash[:alert] = e.message
   end
 
   def update
@@ -42,24 +45,27 @@ class SkillsController < ApplicationController
   end
 
   def user_skills
-    skills = @current_user.skills
-    return render	json: { message: "you don't have any skill" } unless skills
+    @skills = current_user.skills
+    return render	json: { message: "you don't have any skill" } unless @skills
 
-    render json: skills
+    render :index
   end
   
   def add_skill
-    skill_name = params[:skill][:skills] || []
+    # render(:partial => 'skills/add_skill')
+    skill_name = params[:skill][:skills]
     skills = Skill.where(skill_name: skill_name)
     if skills.any?
       current_user.skills << skills
-      redirect_to request.referer
+      # redirect_to request.referer
     else
-      redirect_to request.referer
-  	# return render json: {message: "skill name not found"} unless skill
-  	# render json: {message: "skill added successfully!"}
+      # redirect_to request.referer
+    	# return render json: {message: "skill name not found"} unless skill
+    	# render json: {message: "skill added successfully!"}
+    end
   rescue Exception => e
-  	render json: e.message
+  	# render json: e.message\
+    flash[:alert] = e.message
   end
 
   private
@@ -69,7 +75,7 @@ class SkillsController < ApplicationController
   end
 
   def set_skill
-    @skill = @current_user.skills.find_by_id(params[:id])
+    @skill = Skill.find_by_id(params[:id])
     render json: { message: 'Skill not found' }, status: :not_found unless @skill
   end
 end

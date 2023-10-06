@@ -20,10 +20,12 @@ class JobsController < ApplicationController
 
   def destroy
     @job.destroy!
-
-    render json: { message: 'job deleted successfuly!' }
+    flash[:alert] = "job deleted successfully!"
+    redirect_to request.referer 
+    # render json: { message: 'job deleted successfuly!' }
   rescue Exception => e
-    render json: { errors: e.message }
+    # render json: { errors: e.message }
+    flash[:alert] = e.message
   end
 
   def update
@@ -35,9 +37,9 @@ class JobsController < ApplicationController
   end
 
   def show
-  	job = Job.find_by_id(params[:id])
+  	@job = Job.find_by_id(params[:id])
   	render json: { message: 'Job not found' }, status: :not_found unless job
-    render json: job
+    # render json: job
   end
 
   def top_jobs
@@ -52,7 +54,7 @@ class JobsController < ApplicationController
     @jobs = company.jobs
     if @jobs.blank?
       redirect_to request.referer
-      flash.now[:alert] = "not available jobs"
+      flash[:alert] = "not available jobs"
     else
       render :index
     end
@@ -76,7 +78,7 @@ class JobsController < ApplicationController
   end
 
   def set_job
-    @job = @current_user.company.jobs.find_by_id(params[:id])
+    @job = Job.find_by_id(params[:id])
     render json: { message: 'Job not found' }, status: :not_found unless @job
   end
 end

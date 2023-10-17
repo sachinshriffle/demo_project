@@ -15,17 +15,4 @@
   </tbody>
 </table>
 
-<ul style="list-style-type: none; margin: 0; padding: 0;">
-  <% if current_user.type == "JobRecruiter" %>
-    <% if current_user.company.blank? %>
-      <li style="background-color: #ffffff; display: inline-block; margin-left: 70px; padding-top: 35px;"><%= link_to "Create New Company", new_company_path, style: 'text-decoration: none; color: #007BFF;' %></li>
-      <li style="display: inline-block; margin-left: 70px; padding-top: 35px;"><%= link_to "Create Skill", new_skill_path, style: 'text-decoration: none; color: #007BFF;' %></li>    
-    <% end %>
-  <% else current_user.type == "JobSeeker" %>
-    <%= link_to "add skill" , add_skill_skills_path, style: 'text-decoration: none; color: #007BFF;' %>
-    <% if current_user.job_applications.applied.present? %>
-      <li style="display: inline-block; margin-left: 70px; padding-top: 35px;"><%= link_to "See your job applications", job_applications_path, style: 'text-decoration: none; color: #007BFF;' %></li>
-    <% end  %>
-    <li style="display: inline-block; margin-left: 70px; padding-top: 35px;"><%= link_to "See Skills", user_skills_skills_path, style: 'text-decoration: none; color: #007BFF;' %></li>
-  <% end %>
-</ul>
+

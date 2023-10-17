@@ -10,13 +10,12 @@ class SkillsController < ApplicationController
   end
 
   def create
-    @skill = Skill.new(skill_params)
-    if @skill.save
-      flash[:alert] = "skill create successfully!"
-      redirect_to root_path
-    end
+    @skill = Skill.create!(skill_params)
+      # flash[:alert] = "skill create successfully!"
+    render json: @skill , status: :created 
+      # redirect_to root_path
   rescue Exception => e
-    render json: { errors: e.message }
+     render :new , status: 422
   end
 
   def destroy

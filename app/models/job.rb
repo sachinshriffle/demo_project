@@ -6,6 +6,6 @@ class Job < ApplicationRecord
   has_many :job_applications, dependent: :destroy
   has_many :job_seekers, through: :job_applications,dependent: :destroy
 
-  validates :job_title, uniqueness: { scope: :company_id, message: 'job title for this company is already created' }
+  validates :job_title, uniqueness: { scope: :company_id}
   validates :required_skills, presence: true
 end

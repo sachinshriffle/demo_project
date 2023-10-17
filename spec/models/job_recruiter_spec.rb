@@ -6,7 +6,7 @@ RSpec.describe JobRecruiter, type: :model do
     it { should have_one(:company).without_validating_presence }
   end
 
-  subject {
- 	  FactoryBot.create(:job_recruiter)
-  }
+  # subject {
+ 	#   FactoryBot.create(:job_recruiter)
+  # }
 end

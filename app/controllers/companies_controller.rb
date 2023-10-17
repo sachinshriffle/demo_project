@@ -1,25 +1,28 @@
 class CompaniesController < ApplicationController
-  before_action :set_company, only: [:update, :destroy]
+  before_action :set_company, only: [:edit, :update, :destroy]
 
   def index
-    if current_user.type == "JobRecruiter" && current_user.company.present?
-      # render :user_company
-      @company = current_user.company
-      render :show
-    else
-      @companies = Company.paginate(page: params[:page], per_page: 5)
-    end
+    # if current_user.type == "JobRecruiter" && current_user.company.present?
+    #   # render :user_company
+    #   @company = current_user.company
+    #   render :show
+    # else
+      @companies = Company.all
+      # @companies = Company.paginate(page: params[:page], per_page: 5)
+    # end
   end
 
   def new
-    @company = current_user.create_company
+    # @company = current_user.create_company
+    @company = Company.new
   end
 
   def create
-    @company = current_user.create_company!(company_params)
+    # @company = current_user.create_company!(company_params)
+    @company = Company.create!(company_params)
     redirect_to  root_path
   rescue Exception => e
-    render :new
+    render :new , status: 422
   end
 
   def destroy

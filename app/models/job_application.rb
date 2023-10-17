@@ -4,11 +4,12 @@ class JobApplication < ApplicationRecord
   has_one_attached :resume
 
   enum status: {"applied" => "applied", "approved" => "approved", "rejected" => "rejected"}
+  validates :status , presence: true
 
   delegate :job_recruiter , :company , to: :job , prefix: true
 
-  validates :job_seeker_id, uniqueness: { scope: :job_id, message: "You've already applied for this job" }
-  validate :no_duplicate_applications, on: :apply
+  validates :job_seeker_id, uniqueness: { scope: :job_id}
+  validate :no_duplicate_applications, on: :create
 
   private
 
@@ -18,3 +19,4 @@ class JobApplication < ApplicationRecord
     errors.add(:job_seeker_id, "You've already applied for this job")
   end
 end
+  

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :job do
-  	job_title { 'developer'}
+  	job_title { 'manager'}
   	required_skills { ['c,c++'] }
   	company
     

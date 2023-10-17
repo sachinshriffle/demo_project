@@ -5,9 +5,6 @@
     <div class="field" style="margin-bottom: 15px;">
       <%= skill.label :skill_name, style: 'font-weight: bold;' %><br>
       <%= skill.text_field :skill_name, class: 'skill-input' %> 
-      <% @skill.errors.full_messages_for(:skill_name).each do |message| %>
-        <div style="color: red;"><%= message %></div>
-      <% end %>
     </div>
 
     <div class="field" style="margin-bottom: 20px;">

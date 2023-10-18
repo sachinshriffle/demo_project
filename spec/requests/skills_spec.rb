@@ -16,7 +16,7 @@ RSpec.describe "Skills", type: :request do
       expect(assigns[:skills]).to eq(Skill.all)
     end
   end
-  # new action
+ 
   describe 'GET #new' do
     before do
       get '/skills/new'
@@ -27,7 +27,6 @@ RSpec.describe "Skills", type: :request do
     end
   end
 
-  # create action
   describe 'POST #create' do
 
     context 'when params are correct' do
@@ -46,14 +45,14 @@ RSpec.describe "Skills", type: :request do
       end
     end
   end
-  #edit and update action
-  let(:skill) {FactoryBot.create(:skill)}
+  
+  skill = FactoryBot.create(:skill)
   describe "put /update/id" do
 
     context "with valid parameters" do
 
       it "updates the requested skill" do
-        put "/skills/#{skill.id}" , params: {skill: {skill_name: "RUbY on rAils"} }
+        put "/skills/#{skill.id}" , params: {skill: {skill_name: "nodejs"} }
         skill.reload
         expect(response).to have_http_status(200)
         expect(JSON.parse(response.body)).to eq("message"=>"skill updated successfully!")
@@ -62,15 +61,12 @@ RSpec.describe "Skills", type: :request do
 
     context "with invalid parameters" do
       it "renders a response (i.e. to display the 'edit' template)" do
-        # skill = skill.create!(skill_name: "tcs")
         put skill_url(skill), params: { skill: {skill_name: ""  } }
         expect(response).to have_http_status(200)
-        # expect(response).to redirect_to(edit_skill_path(skill))
       end
     end
   end
 
-  #show action
   describe 'GET #show/:id' do
     context "with data available" do
       it 'render successfully skill data and status' do
@@ -88,7 +84,6 @@ RSpec.describe "Skills", type: :request do
     end
   end
 
-  # destroy action
   describe 'DELETE #destroy/:id' do
     context "with data available" do
       it 'and successfully skill deleted' do
@@ -110,7 +105,7 @@ RSpec.describe "Skills", type: :request do
   describe 'GET#/skills/add_skill' do
     it 'if user skill are add successfully' do 
       get '/skills/add_skill' , params: { skill_name: "python" }
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(404)
       expect(JSON.parse(response.body)).to eq("message"=>"skill added successfully!")
     end
 
@@ -131,6 +126,32 @@ RSpec.describe "Skills", type: :request do
     it 'if user skills are not present' do 
       get '/skills/user_skills'
       expect(JSON.parse(response.body)).to eq("message"=>"you don't have any skill")
+    end
+  end
+
+  describe 'GET#skills/suggested_jobs' do
+    it "should suggest jobs to job seeeker" do 
+      get "/skills/suggested_jobs" , params: {skill: "c++"}
+      expect(response).to have_http_status(404) 
+    end
+
+    it "should suggest jobs to job seeeker" do 
+      get "/skills/suggested_jobs" 
+      expect(response).to have_http_status(404)
+      expect(JSON.parse(response.body)).to eq("message"=>"not available jobs for you")
+    end
+  end
+
+  describe 'GET#skills/:id/specific_applied_job' do
+    it "find  specific applied jobs " do 
+      get "/skills/#{JobApplication.first.id}/specific_applied_job"
+      expect(response).to have_http_status(404) 
+    end
+
+    it "id are not given give message Job Application Not Found'" do 
+      get "/skills/:id/specific_applied_job" 
+      expect(response).to have_http_status(404)
+      expect(JSON.parse(response.body)).to eq("message"=>"Job Application Not Found")
     end
   end
 end

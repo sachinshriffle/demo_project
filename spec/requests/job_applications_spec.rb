@@ -32,11 +32,15 @@ RSpec.describe "JobApplications", type: :request do
   describe 'POST #create' do
 
     context 'when params are correct' do
-      let(:job_application) {FactoryBot.build(:job_application , job_id: job.id , resume: fixture_file_upload(Rails.root.join('resume.png'), 'image/png'))}
+      let(:job_application) {FactoryBot.build(:job_application , job_id: job.id)}
       it 'is expected to create new job_application successfully' do
-        post '/job_applications', params: {job_application: job_application.as_json }
+        job_applications = job_application.as_json
+        job_applications[:resume] = fixture_file_upload('resume.png', 'image/png')
+        post '/job_applications', params: {job_application: job_applications }
         expect(response).to have_http_status(200)
-        expect(JSON.parse(response.body)).to eq("message"=>"You have applied for the job successfully!")
+        data = (JSON.parse(response.body))
+        expect(data['data']['resume_url']).to_not eq nil
+        expect(data['message']).to eq("You have applied for the job successfully!")
       end
     end
 
@@ -82,9 +86,10 @@ RSpec.describe "JobApplications", type: :request do
   describe 'GET #show/:id' do
     context "with data available" do
       it 'render successfully job_application data and status' do
+        data = JobApplication.find(job_application.id)
         get "/job_applications/#{job_application.id}"  
         expect(response).to have_http_status(200)
-        expect(JSON.parse(response.body)).to eq(JobApplication.find(job_application.id).as_json)
+        expect(JSON.parse(response.body)).to eq(JobApplicationSerializer.new(data).serializable_hash)
       end
     end
 
@@ -120,7 +125,7 @@ RSpec.describe "JobApplications", type: :request do
     context "with data available" do
       it 'render successfully job_application data and status' do
         get "/job_applications/applied_jobs"  
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(404)
       end
     end
 

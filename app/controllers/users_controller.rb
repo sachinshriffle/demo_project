@@ -2,8 +2,9 @@ class UsersController < ApplicationController
   # skip_before_action :authorize_request, only: [:create, :forgot, :reset]
 
   def index
-    users = User.paginate(page: params[:page], per_page: 5)
-    render json: users
+    # users = User.paginate(page: params[:page], per_page: 5)
+    @users = User.all
+    # render json: users
   end
 
   def create
@@ -31,24 +32,15 @@ class UsersController < ApplicationController
   end
 
   def show
-    user = User.find_by_id(params[:id])
-    return render json: { message: 'User Data Not available' } unless user
+    @user = User.find_by_id(params[:id])
+    # return render json: { message: 'User Data Not available' } unless user
 
-    render json: user
+    # render json: @user
   end
 
-  def suggested_jobs
-    suggested_jobs = Job.where('required_skills like ?', "%#{@current_user.skills.pluck(:skill_name)}%")
-    return render json: { message: 'not available jobs for you' } if suggested_jobs.blank?
-
-    render json: suggested_jobs
-  end
-
-  def specific_job
-    job = @current_user.job_applications.find_by_id(params[:id])
-    return render	json: { message: 'Job Not Found' } unless job
-
-    render json: job
+  def current_users
+    @users = current_user
+    render :index
   end
 
   def forgot_password

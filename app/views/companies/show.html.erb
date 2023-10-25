@@ -1,17 +1,16 @@
-
+<div style="overflow: hidden;" > 
+	<li style="text-decoration: none; float: left; color: #007BFF; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Jobs", current_company_jobs_jobs_path(:company_id => @company.id) %>
+	<% if current_user.type == "JobRecruiter" %>
+	  <% if current_user.company.present? %>
+	    <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Create Job", new_job_path%></li>
+	    <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Create Skill", new_skill_path%></li>   
+	    <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "See Skills", skills_path %></li>
+	  <% end %>
+	<% end %>
+</div>
 <h1 style="font-size: 24px; margin-bottom: 20px;">Company Name: <%= @company.company_name %></h1>
  
 <p style="font-weight: bold;">Address: <%= @company.address %></p>
 <p style="font-weight: bold;">Contact: <%= @company.contact %></p>
+<p style="font-weight: bold;">Recruiter Name : <%= @company.job_recruiter.name %></p>
 <br/>
-
-<%= link_to "Jobs", current_company_jobs_jobs_path(:company_id => @company.id), style: 'text-decoration: none; color: #007BFF;' %>
-
-<% if current_user.type == "JobRecruiter" %>
-  <% if current_user.company.present? %>
-    <li style="background-color: #ffffff; display: inline-block; margin-left: 70px; padding-top: 35px;">
-      <%= link_to "Create Job", new_job_path, style: 'text-decoration: none; color: #007BFF;' %>
-    </li>
-  <% end %>
-<% end %>
-

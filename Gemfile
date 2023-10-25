@@ -4,6 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.2.2"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
+gem 'sassc-rails'
 gem "rails", "~> 7.0.7", ">= 7.0.7.2"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
@@ -82,5 +83,5 @@ gem "jwt"
 gem "active_model_serializers"
 gem "byebug"
 gem 'rubocop', require: false
-gem 'will_paginate', '~> 4.0'
+# gem 'will_paginate', '~> 4.0'
 gem 'devise'

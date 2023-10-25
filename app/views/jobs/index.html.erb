@@ -6,6 +6,12 @@
       <tr>
         <th style="border: 1px solid #000; padding: 8px;">Job</th>
         <th style="border: 1px solid #000; padding: 8px;">Required Skills</th>
+        <% if current_user.type == "JobRecruiter" %>
+          <th style="border: 1px solid #000; padding: 8px;">Job Application</th>
+          <th style="border: 1px solid #000; padding: 8px;">Delete Job</th>
+        <% else %>
+          <th style="border: 1px solid #000; padding: 8px;">Apply job</th>
+        <% end %>
       </tr>
     </thead>
 
@@ -14,11 +20,16 @@
         <tr>
           <td style="border: 1px solid #000; padding: 8px;"><%= job.job_title %></td>
           <td style="border: 1px solid #000; padding: 8px;"><%= job.required_skills %></td>
-          <% if current_user.type == "JobRecruiter" && current_user.company.id == job.company_id %>
-            <td style="border: 1px solid #000; padding: 1px;"><li><%= link_to "job applications", job_applications_path, style: 'text-decoration: none; color: #007BFF;' %></li></td>
-            <td style="border: 1px solid #000; padding: 1px;"><li"><%= link_to "delete job", job_path(job.id), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %></li></td>
-          <% else %> 
-            <td style="border: 1px solid #000; padding: 8px;"><%= link_to "Apply Job", new_job_application_path(job_id: job.id), style: 'text-decoration: none; color: #007BFF;' %></td>
+          <% if current_user.type == "JobRecruiter" %>
+            <% data = job.job_applications.ids %>
+            <% if data.present? %>
+              <td style="border: 1px solid #000; padding: 1px;"><li><%= link_to "job applications", "/job_applications/#{data.first}", style: 'text-decoration: none; color: #007BFF;' %></li></td>
+            <% else %>
+              <td style="border: 1px solid #000; padding: 8px;"> no applications </td>
+            <% end %>
+            <td style="border: 1px solid #000; padding: 1px;"><li><%= link_to "delete job", job_path(job.id), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %></li></td>
+          <% else %>
+            <td style="border: 1px solid #000; padding: 8px;"><li><%= link_to "Apply Job", new_job_application_path(job_id: job.id), style: 'text-decoration: none; color: #007BFF;' %></li></td>
           <% end %>
         </tr>
       <% end %>

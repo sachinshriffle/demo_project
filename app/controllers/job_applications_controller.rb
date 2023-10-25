@@ -1,8 +1,10 @@
 class JobApplicationsController < ApplicationController
-  before_action :set_application, only: [:edit, :update, :show]
+  include ActiveStorage::SetCurrent
+  before_action :set_application, only: [:edit, :update, :show , :destroy]
 
   def index
     @applications = JobApplication.all
+    # render json: @applications
   end
 
   def new
@@ -12,33 +14,32 @@ class JobApplicationsController < ApplicationController
 
   def create
     @job_application = current_user.job_applications.new(set_params)
-    # current_user.job_application << @job_application
     @job_application.save!
     flash[:alert] = "successfully applied"
-    render :root_path
-    # return render json: {message: 'You have applied for the job successfully!' }, status: :created if job_application.save
+    redirect_to :root_path , status: 200
+    # render json: { message: 'You have applied for the job successfully!' , data: JobApplicationSerializer.new(@job_application)}, status: 200
   rescue Exception => e
     flash[:alert] = e.message
-    render :root_path
+    redirect_to request.referer
+    # render :new , status: 404
   end
 
   def edit
-    @application
+    @application = JobApplication.find_by_id(params[:id])
   end
 
   def update
     # unless @current_user.id == @application.job_company.job_recruiter_id
     #   return render json: { message: 'you have not access to change another application' }
     # end
-    # byebug
     @application.update!(set_params)
     flash[:alert] = "status update successfully!"
     redirect_to root_path 
-    # render json: { data: @application, message: 'Job application updated successfully!' }
+    # render json: { message: 'Job application updated successfully!' }, status: 200
   rescue Exception => e
     # render json: { errors: e.message }
     flash[:alert] = e.message
-    render :edit
+    redirect_to request.referer
   end
 
   def destroy
@@ -46,16 +47,16 @@ class JobApplicationsController < ApplicationController
     #   return	render json: { message: 'you have not access to change another application' }
     # end
     @application.destroy!
-    flash[:alert] = "dleted successfully!"
-    redirect_to request.referer
-    # render json: { message: 'Job application deleted successfully!' }
-  rescue Exception => e
-    flash[:alert] = e.message
-    render :index
+    # flash[:alert] = "dleted successfully!"
+    # redirect_to request.referer
+    render json: { message: 'Job application deleted successfully!' } , status: 200
+  # rescue Exception => e
+    # flash[:alert] = e.message
+    # render :index , status: 404
   end
 
   def show
-    render json: @application
+    @application
   end
 
   def application_by_status
@@ -65,20 +66,24 @@ class JobApplicationsController < ApplicationController
     else
      application = JobApplication.joins(:job_seeker, :job).group(:status).pluck("status, users.name , jobs.job_title ,group_concat(job_applications.id)")  
     end
-    render json: application
+    render json: application , status: 200
   end
 
   def applied_jobs
-    @applications = current_user.job_applications.applied
-    # return render json: { message: 'you not apply any jobs' } if result.blank?
-    render :index
+    result = current_user.job_applications.applied
+    return render json: { message: 'you not apply any jobs' } , status: 404 if result.blank?
+    render json: result , status: 200
   end
 
   private
 
   def set_application
     @application = JobApplication.find_by_id(params[:id])
-    render json: { message: 'application not found' } unless @application
+    # render json: { message: 'application not found' } , status: 404 unless @application
+    unless @application
+      flash[:alert] = "Application Not Found" 
+      # redirect_to request.referer
+    end
   end
 
   def set_params

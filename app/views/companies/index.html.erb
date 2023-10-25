@@ -1,18 +1,37 @@
-<h1 style="font-size: 24px; margin-bottom: 20px;">Welcome To LinkedIn Job Portal</h1>
+<ul style="list-style-type: none; margin: 0; padding: 0; overflow: hidden;">
+  <% if current_user.type == "JobRecruiter" %>
+    <% if current_user.company.blank? %>
+      <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Create New Company", new_company_path %></li>
+      <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Create Skill", new_skill_path%></li>    
+    <% end %>
+  <% else current_user.type == "JobSeeker" %>
+    <li style="float: left; color: black; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "add skill" , add_skill_skills_path %>
+    <% if current_user.job_applications.applied.present? %></li>
+      <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "See your job applications", job_applications_path%></li>
+    <% end  %>
+      <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "See Skills", user_skills_skills_path %></li>
+      <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= form_tag search_companies_path, method: :get do %>
+        <%= text_field_tag :search , params[:search] %>
+        <%= submit_tag "Search", name: nil %>
+      <% end %></li>
+    <% end %>
+  <li style="float: right; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Profile",  current_users_users_path %></li>
+</ul>
 
+<h1 style="font-size: 24px; margin-bottom: 20px;">Welcome To LinkedIn Job Portal</h1>
 <table style="border-collapse: collapse; width: 100%;">
   <thead>
-    <tr>
+    <tr>  
       <th style="border: 1px solid #000; padding: 8px;">Company</th>
     </tr>
   </thead> 
   <tbody>
-    <% @companies.each do |company| %>
-      <tr>
-        <td style="border: 1px solid #000; padding: 8px;"><%= link_to company.company_name, company, style: 'text-decoration: none; color: #007BFF;' %></td>
-      </tr>
+    <% unless current_user.type == "JobRecruiter" && current_user.company.blank? %>
+      <% @companies.each do |company| %>
+        <tr>
+          <td style="border: 1px solid #000; padding: 8px;"><%= link_to company.company_name, company, style: 'text-decoration: none; color: #007BFF;' %></td>
+        </tr>
+      <% end %>
     <% end %>
   </tbody>
 </table>
-
-

@@ -16,6 +16,7 @@ RSpec.describe "Companies", type: :request do
       expect(assigns[:companies]).to eq(Company.all)
     end
   end
+  
   # new action
   describe 'GET #new' do
     before do

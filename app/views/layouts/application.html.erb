@@ -14,6 +14,7 @@
     <ul style="list-style-type: none; margin: 0; padding: 0; background-color: skyblue;">
       <%- if user_signed_in? %>
         <li style="float: right; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Sign out", destroy_user_session_path %> <br /></li>
+        <li style="float: right; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Profile",  current_users_users_path %></li>
         <li style="float: right; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Back", :back %><br /></li>
       <% end %>
     </ul>

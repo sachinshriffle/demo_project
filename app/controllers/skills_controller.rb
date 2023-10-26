@@ -1,5 +1,5 @@
 class SkillsController < ApplicationController
-  before_action :set_skill, only: [:destroy ,:update]
+  before_action :set_skill, only: [:edit ,:destroy ,:update]
 
   def index
     # @skills = Skill.paginate(page: params[:page], per_page: 10)
@@ -13,9 +13,9 @@ class SkillsController < ApplicationController
 
   def create
     @skill = Skill.create!(skill_params)
-    flash[:alert] = "skill create successfully!"
+    flash[:alert] = "Skill Created Successfully!"
     # render json: @skill , status: :created 
-    redirect_to root_path
+    redirect_to request.referer
   rescue Exception => e
     render :new , status: 422
   end
@@ -30,12 +30,19 @@ class SkillsController < ApplicationController
     flash[:alert] = e.message
   end
 
+  def edit
+    @skill
+  end
+
   def update
     @skill.update!(skill_params)
-
-    render json: { message: 'skill updated successfully!' }
+    flash[:alert] = "Skill Updated Successfully!"
+    redirect_to request.referer
+    # render json: { message: 'skill updated successfully!' }
   rescue Exception => e
-    render json: { errors: e.message }
+    # render json: { errors: e.message }
+    flash[:alert] = e.message
+    render :edit
   end
 
   def show
@@ -64,7 +71,7 @@ class SkillsController < ApplicationController
     else
       if skills.present?
         current_user.skills << skills
-        flash[:notice] = "Skill Created successfully!"
+        flash[:notice] = "Skill Added Successfully!"
         redirect_to user_skills_skills_path
     	  # render json: {message: "skill added successfully!"}
       end
@@ -72,13 +79,6 @@ class SkillsController < ApplicationController
   rescue Exception => e  
     flash[:alert] = e.message
     redirect_to request.referer
-  end
-
-  def suggested_jobs
-    suggested_jobs = Job.where('required_skills like ?', "%#{current_user.skills.pluck(:skill_name)}%")
-    return render json: { message: 'not available jobs for you' } , status: 404 if suggested_jobs.blank?
-
-    render json: suggested_jobs , status: 200
   end
 
   def specific_applied_job

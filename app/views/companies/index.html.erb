@@ -5,17 +5,17 @@
       <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Create Skill", new_skill_path%></li>    
     <% end %>
   <% else current_user.type == "JobSeeker" %>
-    <li style="float: left; color: black; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "add skill" , add_skill_skills_path %>
+    <li style="float: left; color: black; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Add Skill" , add_skill_skills_path %>
     <% if current_user.job_applications.applied.present? %></li>
-      <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "See your job applications", job_applications_path%></li>
+      <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "See applied job applications", applied_jobs_job_applications_path%></li>
     <% end  %>
-      <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "See Skills", user_skills_skills_path %></li>
+      <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Your Skills", user_skills_skills_path %></li>
+      <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Jobs For You", suggested_jobs_jobs_path %></li>
       <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= form_tag search_companies_path, method: :get do %>
         <%= text_field_tag :search , params[:search] %>
         <%= submit_tag "Search", name: nil %>
       <% end %></li>
     <% end %>
-  <li style="float: right; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Profile",  current_users_users_path %></li>
 </ul>
 
 <h1 style="font-size: 24px; margin-bottom: 20px;">Welcome To LinkedIn Job Portal</h1>

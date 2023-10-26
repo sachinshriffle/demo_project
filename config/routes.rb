@@ -31,7 +31,6 @@ Rails.application.routes.draw do
   resources :skills do 
     get 'add_skill', on: :collection
     get 'user_skills', on: :collection
-    get 'suggested_jobs', on: :collection
     get 'specific_applied_job', on: :member
   end
 
@@ -39,6 +38,7 @@ Rails.application.routes.draw do
     get 'current_company_jobs', on: :collection
     get 'top_jobs', on: :collection
     get 'search_jobs_by_company_or_skill_name', on: :collection
+    get 'suggested_jobs', on: :collection
   end
 
 #   post '/auth/login', to: 'authentication#login'

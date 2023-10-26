@@ -1,6 +1,6 @@
 class JobApplicationsController < ApplicationController
   include ActiveStorage::SetCurrent
-  before_action :set_application, only: [:edit, :update, :show , :destroy]
+  before_action :set_application, only: [:update, :show , :destroy]
 
   def index
     @applications = JobApplication.all
@@ -16,7 +16,7 @@ class JobApplicationsController < ApplicationController
     @job_application = current_user.job_applications.new(set_params)
     @job_application.save!
     flash[:alert] = "successfully applied"
-    redirect_to :root_path , status: 200
+    redirect_to :root_path 
     # render json: { message: 'You have applied for the job successfully!' , data: JobApplicationSerializer.new(@job_application)}, status: 200
   rescue Exception => e
     flash[:alert] = e.message
@@ -47,12 +47,12 @@ class JobApplicationsController < ApplicationController
     #   return	render json: { message: 'you have not access to change another application' }
     # end
     @application.destroy!
-    # flash[:alert] = "dleted successfully!"
-    # redirect_to request.referer
-    render json: { message: 'Job application deleted successfully!' } , status: 200
-  # rescue Exception => e
-    # flash[:alert] = e.message
-    # render :index , status: 404
+    flash[:alert] = "deleted successfully!"
+    redirect_to request.referer
+    # render json: { message: 'Job application deleted successfully!' } , status: 200
+  rescue Exception => e
+    flash[:alert] = e.message
+    redirect_to request.referer
   end
 
   def show
@@ -70,9 +70,15 @@ class JobApplicationsController < ApplicationController
   end
 
   def applied_jobs
-    result = current_user.job_applications.applied
-    return render json: { message: 'you not apply any jobs' } , status: 404 if result.blank?
-    render json: result , status: 200
+    @application = current_user.job_applications.applied
+    # return render json: { message: 'you not apply any jobs' } , status: 404 if @application.blank?
+    if @application.blank?
+      redirect_to request.referer
+      flash[:alert] = "Not Applied"
+    else  
+      # render json: result , status: 200
+      render :show
+    end  
   end
 
   private

@@ -1,14 +1,19 @@
 <h1 style="font-size: 24px; margin-bottom: 20px;">Company Name: <%= @application.job.job_title %></h1>
 <table style="width: 100%; border-collapse: collapse;">
 	<thead>
-		<p style="font-weight: bold; ">user name: <%= @application.job_seeker.name %></p>
-		<p style="font-weight: bold; ">resume: <%=image_tag(@application.resume) %></p>
+		<p style="font-weight: bold; ">User Name: <%= @application.job_seeker.name %></p>
+		<p style="font-weight: bold; ">Resume: <%=image_tag(@application.resume , width: "20%") %></p>
+		<p style="font-weight: bold; ">Status: <%= @application.status%></p>
 		<br/>
 
 		<% if current_user.type == "JobRecruiter" %>
 		  <% if current_user.company.id = @application.job.company.id %>
 		    <li style="background-color: #ffffff; display: inline-block; margin-left: 70px; padding-top: 35px;">
-		      <%= link_to "accept/reject", edit_job_application_path(@application.id), style: 'text-decoration: none; color: #007BFF;' %>
+		    	<% unless @application.approved? or @application.rejected? %>
+		         <li style="background-color: #ffffff; display: inline-block; margin-left: 70px; padding-top: 35px;"><%= link_to "approved/rejected", edit_job_application_path(@application.id), style: 'text-decoration: none; color: #007BFF;' %></li>
+		      <% end %>
 		    </li>
 		  <% end %>
 		<% end %>
+	</thead>
+</table>

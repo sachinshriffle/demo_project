@@ -5,6 +5,7 @@
 	    <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Create Job", new_job_path%></li>
 	    <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Create Skill", new_skill_path%></li>   
 	    <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "See Skills", skills_path %></li>
+	    <li style="float: left; color: #f2f2f2; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 17px"><%= link_to "Top Jobs", top_jobs_jobs_path%></li>
 	  <% end %>
 	<% end %>
 </div>
@@ -12,5 +13,5 @@
  
 <p style="font-weight: bold;">Address: <%= @company.address %></p>
 <p style="font-weight: bold;">Contact: <%= @company.contact %></p>
-<p style="font-weight: bold;">Recruiter Name : <%= @company.job_recruiter.name %></p>
+<p style="font-weight: bold;">Recruiter Name: <%= @company.job_recruiter.name %></p>
 <br/>

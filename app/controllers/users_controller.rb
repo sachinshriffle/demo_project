@@ -16,11 +16,13 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    user = @current_user.destroy!
-
-    render json: { message: 'user deleted successfuly!' }, status: :ok
+    user = current_user.destroy!
+    flash[:alert] = "Your Account Delete Successfully!"
+    # render json: { message: 'user deleted successfuly!' }, status: :ok
   rescue Exception => e
-    render json: { errors: e.message }
+    # render json: { errors: e.message }
+    flash[:alert] = e.message
+    redirect_to request.referer
   end
 
   def update

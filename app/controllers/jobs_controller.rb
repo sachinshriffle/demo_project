@@ -4,7 +4,7 @@ class JobsController < ApplicationController
   def index
     # @jobs = Job.paginate(page: params[:page], per_page: 5)
     @jobs = Job.all
-    render json: @jobs
+    # render json: @jobs
   end
  
   def new
@@ -53,10 +53,10 @@ class JobsController < ApplicationController
   end
 
   def top_jobs
-    top_jobs = Job.joins(:job_applications).select("jobs.* , count(job_applications.id) as job_application_count").group(:id).order('job_application_count DESC').limit(10)
-    return render	json: { message: 'No Applicants'} , status: 404 if top_jobs.blank?
-
-    render json: top_jobs, status: 200
+    @jobs = Job.joins(:job_applications).select("jobs.* , count(job_applications.id) as job_application_count").group(:id).order('job_application_count DESC').limit(10)
+    # return render	json: { message: 'No Applicants'} , status: 404 if @jobs.blank?
+    # render json: top_jobs, status: 200
+    render :index
   end
 
   def current_company_jobs
@@ -64,8 +64,8 @@ class JobsController < ApplicationController
     @jobs = company.jobs
     if @jobs.blank?
       # redirect_to request.referer
+      flash[:alert] = "not available jobs"
       redirect_to root_path
-      # flash[:alert] = "not available jobs"
       # return render josn: {message: "jobs not available"}, status: 404
     else
       render :index , status: 404
@@ -84,6 +84,23 @@ class JobsController < ApplicationController
     # return render json: { message: 'job not available' }, status: :not_found if result.blank?
 
     render json: result , status: 200
+  end
+
+  def suggested_jobs
+    # byebug
+    skills = current_user.skills.select(:skill_name)
+    skills.each do |skill|
+      @jobs = Job.where('required_skills like ?', "%#{skill.skill_name}%")
+    end
+     # @jobs = Job.where('required_skills ilike ?', "%#{current_user.skills.pluck(:skill_name)}%")
+     # return render json: { message: 'not available jobs for you' } , status: 404 if suggested_jobs.blank?
+    if @jobs.blank?
+      flash[:alert] = "jobs are not match for you"
+      redirect_to request.referer
+    else
+      render "jobs/index"
+      # render json: suggested_jobs , status: 200
+    end
   end
   
   private

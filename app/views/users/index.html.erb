@@ -6,3 +6,4 @@
 <p style="font-size: 17px; margin-bottom: 10px; text-align: center; font-weight: bold;">Email: <%= @users.email %></p>
 <p style="font-size: 16px; margin-bottom: 10px; text-align: center; font-weight: bold;">Role: <%= @users.type %></p>
 <p style="font-size: 16px; margin-bottom: 10px; text-align: center; font-weight: bold;"><%= link_to "Edit Your Profile", edit_user_registration_path(@users)%></p>
+<p style="font-size: 16px; margin-bottom: 10px; text-align: center; font-weight: bold;"><%= link_to "Delete my account", registration_path(@users), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></p>

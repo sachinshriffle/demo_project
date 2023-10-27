@@ -87,7 +87,6 @@ class JobsController < ApplicationController
   end
 
   def suggested_jobs
-    # byebug
     skills = current_user.skills.select(:skill_name)
     skills.each do |skill|
       @jobs = Job.where('required_skills like ?', "%#{skill.skill_name}%")

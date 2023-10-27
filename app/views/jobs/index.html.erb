@@ -25,15 +25,11 @@
             <% if data.present? %>
               <td style="border: 1px solid #000; padding: 1px;"><li><%= link_to "job applications", "/job_applications/#{data.first}", style: 'text-decoration: none; color: #007BFF;' %></li></td>
             <% else %>
-              <td style="border: 1px solid #000; padding: 8px;"> no applications </td>
+            <td style="border: 1px solid #000; padding: 8px;"> no applications </td>
             <% end %>
             <td style="border: 1px solid #000; padding: 1px;"><li><%= link_to "delete job", job_path(job.id), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %></li></td>
           <% else %>
-            <% if job.job_applications.applied.present? %>
-              <td style="border: 1px solid #000; padding: 8px;"><%= job.job_applications.first.status %></td>
-            <% else %>
-              <td style="border: 1px solid #000; padding: 8px;"><li><%= link_to "Apply Job", new_job_application_path(job_id: job.id), style: 'text-decoration: none; color: #007BFF;' %></li></td>
-            <% end %>
+            <td style="border: 1px solid #000; padding: 8px;"><li><%= link_to "Apply Job", new_job_application_path(job_id: job.id), style: 'text-decoration: none; color: #007BFF;' %></li></td>
           <% end %>
         </tr>
       <% end %>

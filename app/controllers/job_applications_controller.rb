@@ -16,7 +16,7 @@ class JobApplicationsController < ApplicationController
     @job_application = current_user.job_applications.new(set_params)
     @job_application.save!
     flash[:alert] = "successfully applied"
-    redirect_to :root_path 
+    redirect_to root_path 
     # render json: { message: 'You have applied for the job successfully!' , data: JobApplicationSerializer.new(@job_application)}, status: 200
   rescue Exception => e
     flash[:alert] = e.message
@@ -61,24 +61,20 @@ class JobApplicationsController < ApplicationController
 
   def application_by_status
     if params[:status]
-     application = JobApplication.send(params[:status].downcase)
+      @applications = JobApplication.send(params[:status].downcase)
      return render json: { message: 'job application not found' } if application.blank?
     else
-     application = JobApplication.joins(:job_seeker, :job).group(:status).pluck("status, users.name , jobs.job_title ,group_concat(job_applications.id)")  
+      @applications = JobApplication.joins(:job_seeker, :job).group(:status).pluck("status, users.name , jobs.job_title ,group_concat(job_applications.id)")  
     end
-    render json: application , status: 200
+    render :index
+     # render json: application , status: 200
   end
 
   def applied_jobs
-    @application = current_user.job_applications.applied
-    # return render json: { message: 'you not apply any jobs' } , status: 404 if @application.blank?
-    if @application.blank?
-      redirect_to request.referer
-      flash[:alert] = "Not Applied"
-    else  
-      # render json: result , status: 200
-      render :show
-    end  
+    @applications = current_user.job_applications.applied
+    # return render json: { message: 'you not apply any jobs' } , status: 404 if @application.blank? 
+    # render json: result , status: 200
+    render :index
   end
 
   private

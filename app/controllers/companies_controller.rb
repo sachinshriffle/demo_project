@@ -71,7 +71,7 @@ class CompaniesController < ApplicationController
   		  if @skills.blank?
   		    @jobs = Job.where('job_title like ?',"%#{query}%")
           if @jobs.blank?
-            redirect_to :index
+            redirect_to companies_path
           else
             render "jobs/index"
           end

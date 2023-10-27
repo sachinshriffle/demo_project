@@ -20,7 +20,7 @@
       <tr>
         <td style="border: 1px solid #000; padding: 8px;"><%= job_application.job_seeker.name %></td>
         <td style="border: 1px solid #000; padding: 8px;"><%= job_application.job.job_title %></td>
-        <td style="border: 1px solid #000; padding: 8px;"><img src="<%= job_application.resume.attached? ? job_application.resume.url : 'no resume available' %>"></td>
+        <td style="border: 1px solid #000; padding: 8px;"><%=image_tag(job_application.resume , width: "20%") %></td>
         <td style="border: 1px solid #000; padding: 8px;"><%= job_application.status %></td>
       <% if current_user.type == "JobSeeker" %>
         <td style="border: 1px solid #000; padding: 8px;"><li"><%= link_to "Withdarw", job_application_path(job_application.id), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %></li></td>

@@ -2,14 +2,8 @@ class CompaniesController < ApplicationController
   before_action :set_company, only: [:edit, :update, :destroy]
 
   def index
-    # if current_user.type == "JobRecruiter" && current_user.company.present?
-    #   # render :user_company
-    #   @company = current_user.company
-    #   render :show
-    # else
-      @companies = Company.all
-      # @companies = Company.paginate(page: params[:page], per_page: 5)
-    # end
+      company = Company.all
+      render json: company
   end
 
   def new

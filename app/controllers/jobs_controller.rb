@@ -2,44 +2,36 @@ class JobsController < ApplicationController
   before_action :set_job, only: [:destroy, :update, :show]
 
   def index
-    @jobs = Job.paginate(page: params[:page], per_page: 5)
-  end
- 
-  def new
-   @job = current_user&.company&.jobs&.new
+    jobs = Job.paginate(page: params[:page], per_page: 5)
+    render json: jobs
   end
 
+
   def create
-    @job = current_user&.company&.jobs&.new(job_params)
-    @job.required_skills = params[:job][:required_skills].split(',').map(&:strip) if params[:job][:required_skills].present?
-    @job.save
-    redirect_to root_path
+    job = current_user&.company&.jobs&.new(job_params)
+    job.required_skills = params[:job][:required_skills].split(',').map(&:strip) if params[:job][:required_skills].present?
+    job.save!
+    render json: {message: "created successfully!" , data: job}
   rescue Exception => e
-    render :new
+    render json: e.message
   end
 
   def destroy
     @job.destroy!
-    flash[:alert] = "job deleted successfully!"
-    redirect_to request.referer 
-    # render json: { message: 'job deleted successfuly!' }
+    render json: { message: 'job deleted successfuly!' } , status: 200
   rescue Exception => e
-    # render json: { errors: e.message }
-    flash[:alert] = e.message
+    render json: { errors: e.message } , status: 404
   end
 
   def update
  		 @job.update!(jobs_params)
-
-    render json: { message: 'job updated successfuly!' }
+    render json: { message: 'job updated successfuly!' } ,status: 200
   rescue Exception => e
-    render json: { errors: e.message }
+    render json: { errors: e.message }, status: 404
   end
 
   def show
-  	@job = Job.find_by_id(params[:id])
-  	render json: { message: 'Job not found' }, status: :not_found unless job
-    # render json: job
+    render json: @job
   end
 
   def top_jobs
@@ -51,12 +43,11 @@ class JobsController < ApplicationController
 
   def current_company_jobs
     company = Company.find_by_id(params[:company_id])
-    @jobs = company.jobs
-    if @jobs.blank?
-      redirect_to request.referer
-      flash[:alert] = "not available jobs"
+    jobs = company.jobs
+    if jobs.blank?
+      render json: {message: "jobs are not created"}, status: :not_found
     else
-      render :index
+      render json: jobs , status: 200
     end
   end
 

@@ -2,21 +2,15 @@ class CompaniesController < ApplicationController
   before_action :set_company, only: [:edit, :update, :destroy]
 
   def index
-      company = Company.all
-      render json: company
-  end
-
-  def new
-    # @company = current_user.create_company
-    @company = Company.new
+    companies = Company.all
+    render json: companies
   end
 
   def create
-    # @company = current_user.create_company!(company_params)
-    @company = Company.create!(company_params)
-    redirect_to  root_path
+    company = current_user.create_company!(company_params)
+    render json: {data: company , message: "created successfully!"} , status: 200
   rescue Exception => e
-    render :new , status: 422
+    render json: {errors: e.message}. status: 404
   end
 
   def destroy
@@ -26,21 +20,17 @@ class CompaniesController < ApplicationController
     render json: { errors: e.message }
   end
 
-  def edit
-    @company
-  end
-
   def update
-    @company.update!(company_params)
-    # render json: { data: @company, message: 'company updated successfuly!'}
+    company.update!(company_params)
+    render json: { data: company, message: 'company updated successfuly!'} , status: 200
   rescue Exception => e
-    render json: { errors: e.message }
+    render json: { errors: e.message }, status: 404ss
   end
 
   def show
-  	@company = Company.find_by_id(params[:id])
-    # return render json: { message: 'company not available' } unless company
-    # render json: @company
+  	company = Company.find_by_id(params[:id])
+    return render json: { message: 'company not available' } unless company
+    render json: company
   end
 
   def company_by_job_id
@@ -49,12 +39,11 @@ class CompaniesController < ApplicationController
   	render json: job.company
   end
 
-  # def user_company
-  #   @company = current_user.company
-  #   return render json: { message: 'you not create any company' } unless company.present?
-
-  #   render json: company
-  # end
+  def user_company
+    company = current_user.company
+    return render json: { message: 'you not create any company' } , status: :not_found unless company.present?
+    render json: company , status: 200
+  end
 
   def search 
   	query = params[:search].downcase

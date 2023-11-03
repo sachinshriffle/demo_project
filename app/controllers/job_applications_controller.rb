@@ -2,56 +2,40 @@ class JobApplicationsController < ApplicationController
   before_action :set_application, only: [:edit, :update, :show]
 
   def index
-    @applications = JobApplication.all
-  end
-
-  def new
-    @job = Job.find_by_id(params[:job_id])
-    @job_application = current_user.job_applications.new
+    applications = JobApplication.all
+    render json: applications
   end
 
   def create
-    @job_application = current_user.job_applications.new(set_params)
-    # current_user.job_application << @job_application
-    @job_application.save!
-    flash[:alert] = "successfully applied"
-    render :root_path
-    # return render json: {message: 'You have applied for the job successfully!' }, status: :created if job_application.save
+    job_id = params[:job_id]
+    params = params[:resume]
+    if job_id.present? && resume.attached?
+      @job_application = current_user.job_applications.create!(job_id: job_id , resume: resume , status: "applied")
+      return render json: {message: 'You have applied for the job successfully!' }, status: :created
+    else
+      render json: {message: "resume or job_id can't be blank"}
   rescue Exception => e
-    flash[:alert] = e.message
-    render :root_path
-  end
-
-  def edit
-    @application
+    render json: e.message
   end
 
   def update
-    # unless @current_user.id == @application.job_company.job_recruiter_id
-    #   return render json: { message: 'you have not access to change another application' }
-    # end
-    # byebug
-    @application.update!(set_params)
-    flash[:alert] = "status update successfully!"
-    redirect_to root_path 
-    # render json: { data: @application, message: 'Job application updated successfully!' }
+    unless @current_user.id == @application.job_company.job_recruiter_id
+      return render json: { message: 'you have not access to change another application' }
+    end
+    application.update!(set_params)
+    render json: { data: @application, message: 'Job application updated successfully!' }
   rescue Exception => e
-    # render json: { errors: e.message }
-    flash[:alert] = e.message
-    render :edit
+    render json: { errors: e.message }
   end
 
   def destroy
-    # unless current_user.id == @application.job_company.job_recruiter_id
-    #   return	render json: { message: 'you have not access to change another application' }
-    # end
+    unless current_user.id == @application.job_company.job_recruiter_id
+      return	render json: { message: 'you have not access to change another application' }
+    end
     @application.destroy!
-    flash[:alert] = "dleted successfully!"
-    redirect_to request.referer
-    # render json: { message: 'Job application deleted successfully!' }
+    render json: { message: 'Job application deleted successfully!' }
   rescue Exception => e
-    flash[:alert] = e.message
-    render :index
+    render json: e.message
   end
 
   def show
@@ -69,9 +53,9 @@ class JobApplicationsController < ApplicationController
   end
 
   def applied_jobs
-    @applications = current_user.job_applications.applied
-    # return render json: { message: 'you not apply any jobs' } if result.blank?
-    render :index
+    result = current_user.job_applications.applied
+    return render json: { message: 'you not apply any jobs' } if result.blank?
+    render json: results
   end
 
   private

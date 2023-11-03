@@ -1,6 +1,5 @@
 class CompaniesController < ApplicationController
   before_action :set_company, only: [:update, :destroy]
-  # before_action :authenticate_user!
   def index
     if current_user.type == "JobRecruiter" && current_user.company.present?
       @company = current_user.company
@@ -41,8 +40,6 @@ class CompaniesController < ApplicationController
 
   def show
   	@company = Company.find_by_id(params[:id])
-    # return render json: { message: 'company not available' } , status: :not_found unless @company
-    # render json: @company
   end
 
   def company_by_job_id
@@ -60,7 +57,6 @@ class CompaniesController < ApplicationController
 
   def search
   	query = params[:search]
-  	# return render json: { message: "not available"} if query.blank?
     return flash[:notice] =  "not available"if query.blank?
   	user = User.where('name like ?', "%#{query}%")
     @user = user.first
@@ -84,7 +80,6 @@ class CompaniesController < ApplicationController
     else
       render "users/show"
   	end
-  	# render json: @result , status: 200
   end
  
   private
@@ -95,6 +90,5 @@ class CompaniesController < ApplicationController
 
   def set_company
     @company = current_user.company
-    # render json: { message: 'company not available' } unless @company
   end
 end

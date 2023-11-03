@@ -2,9 +2,7 @@ class SkillsController < ApplicationController
   before_action :set_skill, only: [:edit ,:destroy ,:update]
 
   def index
-    # @skills = Skill.paginate(page: params[:page], per_page: 10)
     @skills = Skill.all
-    # render json: @skills
   end
 
   def new
@@ -14,7 +12,6 @@ class SkillsController < ApplicationController
   def create
     @skill = Skill.create!(skill_params)
     flash[:alert] = "Skill Created Successfully!"
-    # render json: @skill , status: :created 
     redirect_to request.referer
   rescue Exception => e
     render :new , status: 422
@@ -24,9 +21,7 @@ class SkillsController < ApplicationController
     @skill.destroy!
     flash[:alert] = "skill deleted successfully!"
     redirect_to request.referer
-    # render json: { message: 'skill deleted successfully!' }
   rescue Exception => e
-    # render json: { errors: e.message } , status: 404
     flash[:alert] = e.message
   end
 
@@ -38,9 +33,7 @@ class SkillsController < ApplicationController
     @skill.update!(skill_params)
     flash[:alert] = "Skill Updated Successfully!"
     redirect_to request.referer
-    # render json: { message: 'skill updated successfully!' }
   rescue Exception => e
-    # render json: { errors: e.message }
     flash[:alert] = e.message
     render :edit
   end
@@ -54,12 +47,13 @@ class SkillsController < ApplicationController
 
   def user_skills
     @skills = current_user.skills
-    # return render	json: { message: "you don't have any skill" } if @skills.blank?
     if @skills.blank?
      flash[:alert] = "you dont have any skill"
      redirect_to request.referer
+    else
+      render :index
     end
-    # render json: @skills , status: 200
+     
   end
   
   def add_skill
@@ -73,7 +67,6 @@ class SkillsController < ApplicationController
         current_user.skills << skills
         flash[:notice] = "Skill Added Successfully!"
         redirect_to user_skills_skills_path
-    	  # render json: {message: "skill added successfully!"}
       end
     end
   rescue Exception => e  
@@ -96,6 +89,9 @@ class SkillsController < ApplicationController
 
   def set_skill
     @skill = Skill.find_by_id(params[:id])
-    # render json: { message: 'Skill not found' }, status: :not_found unless @skill
+    unless @skill
+      flash[:alert] = "skill not found"
+      redirect_to request.referer
+    end
   end
 end

@@ -2,9 +2,7 @@ class JobsController < ApplicationController
   before_action :set_job, only: [:destroy, :update, :show]
 
   def index
-    # @jobs = Job.paginate(page: params[:page], per_page: 5)
     @jobs = Job.all
-    # render json: @jobs
   end
  
   def new
@@ -17,7 +15,6 @@ class JobsController < ApplicationController
     @job.save!
     flash[:alert] = "job create successfully!"
     redirect_to root_path
-    # redirect_to "/jobs/#{@job.id}"
   rescue Exception => e
     flash[:alert] = e.message
     render :new , status: 422
@@ -39,10 +36,8 @@ class JobsController < ApplicationController
     @job.destroy!
     flash[:alert] = "job deleted successfully!"
     redirect_to request.referer 
-    # render json: { message: 'job deleted successfuly!' }
   rescue Exception => e
     render json: { errors: e.message }, status: 404
-    # flash[:alert] = e.message
   end
   
 
@@ -54,8 +49,6 @@ class JobsController < ApplicationController
 
   def top_jobs
     @jobs = Job.joins(:job_applications).select("jobs.* , count(job_applications.id) as job_application_count").group(:id).order('job_application_count DESC').limit(10)
-    # return render	json: { message: 'No Applicants'} , status: 404 if @jobs.blank?
-    # render json: top_jobs, status: 200
     render :index
   end
 
@@ -63,13 +56,10 @@ class JobsController < ApplicationController
     company = Company.find_by_id(params[:company_id])
     @jobs = company.jobs
     if @jobs.blank?
-      # redirect_to request.referer
       flash[:alert] = "not available jobs"
       redirect_to root_path
-      # return render josn: {message: "jobs not available"}, status: 404
     else
       render :index , status: 404
-      # return render json: @jobs , status: 200
     end
   end
 
@@ -81,8 +71,6 @@ class JobsController < ApplicationController
     else
       result = Job.all
   	end
-    # return render json: { message: 'job not available' }, status: :not_found if result.blank?
-
     render json: result , status: 200
   end
 
@@ -91,14 +79,11 @@ class JobsController < ApplicationController
     skills.each do |skill|
       @jobs = Job.where('required_skills like ?', "%#{skill.skill_name}%")
     end
-     # @jobs = Job.where('required_skills ilike ?', "%#{current_user.skills.pluck(:skill_name)}%")
-     # return render json: { message: 'not available jobs for you' } , status: 404 if suggested_jobs.blank?
     if @jobs.blank?
       flash[:alert] = "jobs are not match for you"
       redirect_to request.referer
     else
       render "jobs/index"
-      # render json: suggested_jobs , status: 200
     end
   end
   
@@ -110,6 +95,9 @@ class JobsController < ApplicationController
 
   def set_job
     @job = Job.find_by_id(params[:id])
-    # render json: { message: 'Job not found' }, status: :not_found unless @job
+    unless @job
+      flash[:alert] = "job not found"
+      redirect_to request.referer   
+    end   
   end
 end

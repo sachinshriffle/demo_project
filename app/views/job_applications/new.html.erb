@@ -6,13 +6,13 @@
   <!-- Hidden field for status -->
   <%= job_application.hidden_field :status, value: "applied" %>
 
-  <div class="field">
-    <%= job_application.label :resume, class: 'form-label' %><br>
-    <%= job_application.file_field :resume, class: 'form-file-input' %> 
+  <div class="form-group">
+    <%= job_application.label :resume %><br>
+    <%= job_application.file_field :resume, class: 'form-control-file' %> 
   </div>
 
 
-  <div class="field">
+  <div class="form-group">
     <%= job_application.submit "Create", class: 'btn btn-primary submit-button' %>
   </div>
 <% end %>

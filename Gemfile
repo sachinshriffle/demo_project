@@ -78,10 +78,12 @@ group :test do
   gem 'simplecov'
 end
 
-gem "bcrypt", "~> 3.1.7"
+# gem "bcrypt", "~> 3.1.7"
 gem "jwt"
 gem "active_model_serializers"
 gem "byebug"
 gem 'rubocop', require: false
 # gem 'will_paginate', '~> 4.0'
 gem 'devise'
+gem 'sidekiq' 
+gem 'bootstrap' 

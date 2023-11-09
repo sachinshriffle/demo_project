@@ -2,13 +2,13 @@
   <h1 style="font-size: 24px; margin-bottom: 20px;">New Skill</h1>
 
   <%= form_with model: @skill, html: { class: 'skill-form' } do |skill| %>
-    <div class="field" style="margin-bottom: 15px;">
+    <div class="form-group">
       <%= skill.label :skill_name, style: 'font-weight: bold;' %><br>
       <%= skill.text_field :skill_name, class: 'skill-input' %> 
     </div>
 
-    <div class="field" style="margin-bottom: 20px;">
-      <%= skill.submit "Create", class: 'skill-button' %>
+    <div class="form-group">
+      <%= skill.submit "Create", class: 'btn btn-primary submit-button' %>
     </div>
   <% end %>	
 </div>

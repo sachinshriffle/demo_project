@@ -2,18 +2,18 @@
   <h1 style="font-size: 24px; margin-bottom: 20px;">New Job</h1>
 
   <%= form_with model: @job, html: { class: 'job-form' } do |job| %>
-    <div class="field" style="margin-bottom: 15px;">
+    <div class="form-group">
       <%= job.label :job_title, style: 'font-weight: bold;' %><br>
-      <%= job.text_field :job_title, class: 'job-input' %>
+      <%= job.text_field :job_title %>
     </div>
 
-    <div class="field" style="margin-bottom: 15px;">
+    <div class="form-group">
       <%= job.label :required_skills, 'Required Skills (comma-separated)', style: 'font-weight: bold;' %><br>
-      <%= job.text_field :required_skills, class: 'skill-input' %>
+      <%= job.text_field :required_skills %>
     </div>
 
-    <div class="field" style="margin-bottom: 20px;">
-      <%= job.submit "Create", class: 'job-button' %>
+    <div class="form-group">
+      <%= job.submit "Create" , class: 'btn btn-primary submit-button'%>
     </div>
   <% end %>
 </div>

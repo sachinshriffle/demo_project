@@ -1,22 +1,22 @@
 <h1 style="font-size: 24px; margin-bottom: 20px;">New Company</h1>
 
 <%= form_with model: @company, html: { style: 'margin-top: 20px;' } do |company| %>
-  <div class="field" style="margin-bottom: 10px;">
-    <%= company.label :company_name, style: 'font-weight: bold;' %><br>
-    <%= company.text_field :company_name, style: 'width: 100%; padding: 5px;' %> 
+  <div class="form-check">
+    <%= company.label :company_name, class: 'font-weight: bold;' %><br>
+    <%= company.text_field :company_name%> 
   </div>
 
-  <div class="field" style="margin-bottom: 10px;">
+  <div class="form-check">
     <%= company.label :address, style: 'font-weight: bold;' %><br>
-    <%= company.text_field :address, style: 'width: 100%; padding: 5px;' %>
+    <%= company.text_field :address %>
   </div>
 
-  <div class="field" style="margin-bottom: 10px;">
+  <div class="form-check">
     <%= company.label :contact, style: 'font-weight: bold;' %><br>
-    <%= company.text_field :contact, style: 'width: 100%; padding: 5px;' %>
+    <%= company.text_field :contact %>
   </div>
 
-  <div class="field">
-    <%= company.submit "Create", style: 'background-color: #007BFF; color: #fff; padding: 10px 20px; border: none; cursor: pointer;' %>
+  <div class="btn-outline-success">
+    <%= company.submit "Create" , class: 'btn btn-primary submit-button' %>
   </div>
 <% end %>

@@ -8,8 +8,8 @@
 	  <li class="dropdown-item"><%= link_to "Jobs", current_company_jobs_jobs_path(:company_id => @company.id) %>
 	<% if current_user.type == "JobRecruiter" %>
 	  <% if current_user.company.present? %>
-	    <li class="dropdown-item"><%= link_to "Create Job", new_job_path%></li>
 	    <li class="dropdown-item"><%= link_to "Create Skill", new_skill_path%></li>   
+	    <!-- <li class="dropdown-item"><%= link_to "Create Job", new_job_path%></li>    -->
 	    <li class="dropdown-item"><%= link_to "See Skills", skills_path %></li>
 	    <li class="dropdown-item"><%= link_to "Top Jobs", top_jobs_jobs_path%></li>
 	  <% end %>
@@ -21,3 +21,5 @@
 <p style="font-weight: bold;">Contact: <%= @company.contact %></p>
 <p style="font-weight: bold;">Recruiter Name: <%= @company.job_recruiter.name %></p>
 <br/>
+<h2> Create Job </h2>
+<%= render "jobs/new" %>

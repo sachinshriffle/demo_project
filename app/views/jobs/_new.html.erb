@@ -1,7 +1,7 @@
-<div style="text-align: center;">
+<div style="text-align: left;">
   <h1 style="font-size: 24px; margin-bottom: 20px;">New Job</h1>
 
-  <%= form_with model: @job, html: { class: 'job-form' } do |job| %>
+  <%= form_with  model: [ @job, Job.new] , html: { class: 'job-form' } do |job| %>
     <div class="form-group">
       <%= job.label :job_title, style: 'font-weight: bold;' %><br>
       <%= job.text_field :job_title %>
@@ -17,4 +17,3 @@
     </div>
   <% end %>
 </div>
- 

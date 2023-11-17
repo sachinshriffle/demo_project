@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
- # skip_before_action :authorize_request, only: [:create, :forgot, :reset]
+ skip_before_action :authenticate_user!, only: [:user_type]
 
   def index
     @users = User.all
@@ -66,9 +66,10 @@ class UsersController < ApplicationController
     return render json: {status: 'successfuly!'}, status: :ok if user.reset_password!(params[:password])
 
     render json: {error: user.errors.full_messages}, status: :unprocessable_entity
- 
   end
 
+  def user_type 
+  end
   private
 
   def user_params

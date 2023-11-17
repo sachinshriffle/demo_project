@@ -3,8 +3,8 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable , :omniauthable, omniauth_providers: [:google_oauth2]
-  validates :name, presence: true, length: { minimum: 3, case_sensitive: false }
-  validates :type, presence: true
+  # validates :name, presence: true, length: { minimum: 3, case_sensitive: false }
+  # validates :type, presence: true
 
 	# def generate_password_token!
 	# 	self.reset_password_token = generate_token
@@ -31,12 +31,13 @@ class User < ApplicationRecord
   #   return nil unless email =~ /@shriffle.com\z/
   #   create_with(name: name).find_or_create_by!(email: email)
   # end
-  def self.from_omniauth(auth)
-  	byebug
-    where(uid: auth.uid).first_or_create do |user|
+  def self.from_omniauth(auth, role)
+    @user=where(uid: auth.uid).first_or_create do |user|
       user.email = auth.info.email
-      user.encrypted_password = Devise.friendly_token[0, 20]
+      user.password = Devise.friendly_token[0, 20]
       user.name = auth.info.name # assuming the user model has a name
+      user.type = role
     end
+    return @user
   end
 end

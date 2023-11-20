@@ -1,5 +1,0 @@
-<!-- app/views/users/select_role.html.erb -->
-<%= form_tag(user_google_oauth2_omniauth_authorize_path, method: :post) do %>
-  <%= select_tag :rrole, options_for_select(['JobRecruiter', 'JobSeeker']), prompt: 'Select Role' %>
-  <%= submit_tag 'Continue' %>
-<% end %>

@@ -28,18 +28,24 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   #   super(scope)
   # end
   def google_oauth2
-    if params[:role].present?
-       @user = User.from_omniauth(auth. params[:role])
-      if @user.present?
-        sign_out_all_scopes
-        flash[:success] = t 'devise.omniauth_callbacks.success', kind: 'Google'
-        sign_in_and_redirect @user, event: :authentication
-      else
-        flash[:alert] = t 'devise.omniauth_callbacks.failure', kind: 'Google', reason: "#{auth.info.email} is not authorized."
-        redirect_to new_user_session_path
-      end
+    omniauth("Google")
+  end
+
+  def facebook
+    omniauth("Facebook")
+  end
+
+  def omniauth(provider)
+    byebug
+    @user = User.from_omniauth(auth)
+    if @user.present?
+      sign_out_all_scopes
+      flash[:success] = t 'devise.omniauth_callbacks.success', kind: provider
+      return render "users/edit" unless @user.type.present?
+      sign_in_and_redirect @user, event: :authentication
     else
-      redirect_to user_type_path
+      flash[:alert] = t 'devise.omniauth_callbacks.failure', kind: provider, reason: "#{auth.info.email} is not authorized."
+      redirect_to new_user_session_path
     end
   end
 

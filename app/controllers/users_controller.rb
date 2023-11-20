@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
- skip_before_action :authenticate_user!, only: [:user_type]
+ skip_before_action :authenticate_user!, only: [:edit , :update]
 
   def index
     @users = User.all
@@ -13,6 +13,22 @@ class UsersController < ApplicationController
     render json: { errors: e.message }
   end
 
+  def edit
+    @user
+  end
+
+  def update
+    @user = User.find(params[:id])
+    @user.update(update_params)
+
+    sign_in_and_redirect @user
+    # render json: { message: 'user updated successfuly!' }, status: :ok
+  rescue Exception => e
+    # render json: { errors: e.message }
+    flash[:alert] = e.message
+    redirect_to request.referer
+  end
+
   def destroy
     user = current_user.destroy!
     flash[:alert] = "Your Account Delete Successfully!"
@@ -23,13 +39,6 @@ class UsersController < ApplicationController
     redirect_to request.referer
   end
 
-  def update
-    user = @current_user.update!(update_params)
-
-    render json: { message: 'user updated successfuly!' }, status: :ok
-  rescue Exception => e
-    render json: { errors: e.message }
-  end
 
   def show
     @user = User.find_by_id(params[:id])
@@ -68,8 +77,6 @@ class UsersController < ApplicationController
     render json: {error: user.errors.full_messages}, status: :unprocessable_entity
   end
 
-  def user_type 
-  end
   private
 
   def user_params
@@ -77,6 +84,6 @@ class UsersController < ApplicationController
   end
 
   def update_params
-    params.permit(:name, :mobile_number, :email)
+    params.require(:user).permit(:name, :mobile_number, :type , :email)
   end
 end

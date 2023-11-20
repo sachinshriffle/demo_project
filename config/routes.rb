@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   devise_scope :user do
     get '/users/sign_out', to: 'devise/sessions#destroy'
   end
-  resources :users , only: :index do
+  resources :users , only: [:index ,:edit, :update ] do
     get 'current_users' , on: :collection
   end
   

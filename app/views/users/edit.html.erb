@@ -1,0 +1,17 @@
+<h2>Select Role</h2>
+  <!-- Hidden field for job_id -->
+<strong>uid:</strong> <%= @user.uid %></br>
+<strong>Email:</strong> <%= @user.email %></br>
+<strong>Name:</strong> <%= @user.name %></br>
+
+<!-- Hidden field for status -->
+<%= form_with model: @user, url: user_path(@user), method: :patch do |user| %>
+  <div class="form">
+    <%= user.label :role %><br>
+    <%= user.select :type, [:JobRecruiter, :JobSeeker] %>
+  </div>
+
+  <div class="form">
+    <%= user.submit "continue" %>
+  </div>
+<% end %>

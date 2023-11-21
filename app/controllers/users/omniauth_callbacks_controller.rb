@@ -36,7 +36,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def omniauth(provider)
-    byebug
     @user = User.from_omniauth(auth)
     if @user.present?
       sign_out_all_scopes

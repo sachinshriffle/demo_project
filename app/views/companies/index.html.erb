@@ -1,25 +1,19 @@
-<nav class="navbar navbar-expand-sm " style="background-color: lightgrey">
-  <a class="navbar-brand" href="">Home</a>
-  <div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-     Menu
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+<nav class="navbar fixed-bottom navbar-light" style="background-color: lightblue">
+     <ul class="nav">
       <% if current_user.type == "JobRecruiter" %>
-        <li><a class="dropdown-item" href="skills/new">Create Skill</a></li>
+        <li class="nav-item"><a class="nav-link active" href="skills/new">Create Skill</a></li>
         <% if current_user.company.blank? %>
-          <li><a class="dropdown-item" href="companies/new">Create New Company</a></li>
+          <li class="nav-item"><a class="nav-link active" href="companies/new">Create New Company</a></li>
         <% end %>
       <% else current_user.type == "JobSeeker" %>
-        <li><a class="dropdown-item" href="skills/add_skill">Add Skill</a></li>
+        <li class="nav-item"><a class="nav-link active" href="skills/add_skill">Add Skill</a></li>
         <% if current_user.job_applications.applied.present? %>
-          <li><a class="dropdown-item" href="job_applications/applied_jobs">Applied Applications</a></li>
+          <li class="nav-item"><a class="nav-link active" href="job_applications/applied_jobs">Applied Applications</a></li>
         <% end  %>
-          <li><a class="dropdown-item" href="skills/user_skills">Your Skills</a></li>
-          <li><a class="dropdown-item" href="jobs/suggested_jobs">Jobs For You</a></li>
+          <li class="nav-item"><a class="nav-link active" href="skills/user_skills">Your Skills</a></li>
+          <li class="nav-item"><a class="nav-link active" href="jobs/suggested_jobs">Jobs For You</a></li>
       <% end %>
     </ul>
-  </div>
 </nav>
 <h1 style="font-size: 24px; margin-bottom: 20px;">Company</h1>
 <div class="container">

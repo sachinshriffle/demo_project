@@ -8,13 +8,14 @@ Rails.application.routes.draw do
 #     get 'forgot_password', on: :collection
 #     get 'reset_password', on: :collection
 #   end
-    
+  get '/create_token' , to: 'users#create_token'
   devise_for :users ,controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
   devise_scope :user do
     get '/users/sign_out', to: 'devise/sessions#destroy'
   end
   resources :users , only: [:index ,:edit, :update ] do
     get 'current_users' , on: :collection
+    get 'chats' , on: :collection
   end
   
   resources :companies do
